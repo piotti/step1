@@ -26,45 +26,62 @@ class Player {
         this.onstage = true;
     }
 
-    get name() {
-        return this.name;
-    }
+    // get name() {
+    //     return this.name;
+    // }
 
-    get health() {
-        return this.health;
-    }
+    // get health() {
+    //     return this.health;
+    // }
 
-    get mana() {
-        return this.mana;
-    }
+    // get mana() {
+    //     return this.mana;
+    // }
 
-    get position_x() {
-        return this.position_x;
-    }
+    // get position_x() {
+    //     return this.position_x;
+    // }
 
-    set_position_x(new_pos_x) {
-        this.position_x = new_pos_x;
-    }
+    // set name(name) {
+    //     this.name = name;
+    // }
 
-    get position_y() {
-        return this.position_y;
-    }
+    // set health(health) {
+    //     this.health = health;
+    // }
 
-    set_position_y(new_pos_y) {
-        this.position_y = new_pos_y;
-    }
+    // set mana(mana) {
+    //     this.mana = mana;
+    // }
 
-    get vel_x() {
-        return this.vel_x;
-    }
+    // set position_x(x) {
+    //     this.x = x;
+    // }
 
-    get vel_y() {
-        return this.vel_y;
-    }
+    // get position_y() {
+    //     return this.position_y;
+    // }
 
-    set_vel_y(new_vel_y) {
-        this.vel_y = new_vel_y;
-    }
+    // set position_y(y) {
+    //     this.y = y;
+    // }
+
+
+    // get vel_x() {
+    //     return this.vel_x;
+    // }
+
+    // get vel_y() {
+    //     return this.vel_y;
+    // }
+
+    // set vel_x(vel_x) {
+    //     this.vel_x = vel_x;
+    // }
+
+    // set vel_y(vel_y) {
+    //     this.vel_y = vel_y;
+    // }
 
     set_onstage(flag) {
         this.onstage = flag;
@@ -96,20 +113,20 @@ class Player {
     updatePosition(direction) {
         switch(direction){
             case directions.LEFT:
-                this.set_position_x(this.position_x() - this.vel_x());
+                this.position_x = this.position_x - this.vel_x;
             case directions.RIGHT:
-                this.set_position_x(this.position_x() + this.vel_x());
+                this.position_x = this.position_x + this.vel_x;
             case direction.STOP:
                 // do nothing
         }
         
-        set_vel_y(this.vel_y + gravity);
-        this.set_position_y(this.position_y() + vel_y());
+        this.vel_y = this.vel_y + gravity;
+        this.position_y = this.position_y + this.vel_y;
 
-        if (this.position_x() < platform_x + platform_length && this.position_x() > platform_x) {
+        if (this.position_x < platform_x + platform_length && this.position_x > platform_x) {
             this.set_onstage(true);
-            this.set_position_y(min(platform_y, this.position_y()));
-            if (this.position_y() == platform_y) {
+            this.position_y = min(platform_y, this.position_y);
+            if (this.position_y == platform_y) {
                 this.vel_y = 0;
             }
         } else {
@@ -118,6 +135,6 @@ class Player {
     }
 
     draw() {
-        
+        rect(this.position_x, this.position_y, this.width, this.height);
     }
 }
