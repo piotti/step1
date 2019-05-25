@@ -24,6 +24,7 @@ class Player {
         this.vel_y        = vel_y;
 
         this.onstage = true;
+        this.direction = directions.STOP;
     }
 
     // get name() {
@@ -110,8 +111,12 @@ class Player {
         }
     }
 
-    updatePosition(direction) {
-        switch(direction){
+    takeDirection(direction) {
+        this.direction = direction;
+    }
+
+    updatePosition() {
+        switch(this.direction){
             case directions.LEFT:
                 this.position_x = this.position_x - this.vel_x;
             case directions.RIGHT:
