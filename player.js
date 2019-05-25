@@ -10,7 +10,8 @@ class Player {
                 position_x,
                 position_y,
                 vel_x,
-                vel_y) {
+                vel_y,
+                color) {
 
         this.name   = name;
         this.health = health;
@@ -22,6 +23,8 @@ class Player {
         this.position_y   = position_y;
         this.vel_x        = vel_x;
         this.vel_y        = vel_y;
+
+        this.color = color;
 
         this.onstage = true;
         this.direction = directions.STOP;
@@ -161,6 +164,7 @@ class Player {
     }
 
     draw() {
+        fill(color(this.color));
         rect(this.position_x, this.position_y - this.height, this.width, this.height);
     }
 }

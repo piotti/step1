@@ -87,6 +87,7 @@ class Game {
 
     draw() {
         background(200, 200, 200);
+        fill(color('gray'))
         rect(platform_x, platform_y, platform_length, 10);
         for (var i = 0; i < this.entities.length; i++) {
             this.entities[i].updatePosition(directions.STOP)

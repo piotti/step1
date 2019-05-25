@@ -17,7 +17,8 @@ function setup() {
                 width/2,
                 height/2,
                 0,
-                0);
+                0,
+                'blue');
     var entity2 = new Player('P2',
                 100,
                 100,
@@ -26,7 +27,8 @@ function setup() {
                 width/2+50,
                 height/2,
                 0,
-                0);
+                0,
+                'red');
     var controller1 = new PlayerOneController(entity1)
     var controller2 = new PlayerTwoController(entity2)
     game = new Game([entity1, entity2], [controller1, controller2]);
