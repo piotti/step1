@@ -1,7 +1,7 @@
 class Player {
     health = 100;
     mana   = 100;
-    jump_vel = 30; 
+    jump_vel = -10; 
     constructor(name,
                 health,
                 mana,
@@ -89,7 +89,7 @@ class Player {
     }
 
     jump() {
-        this.vel_y = -jump_vel;
+        this.vel_y = this.jump_vel;
     }
 
     attack() {
@@ -113,18 +113,26 @@ class Player {
 
     takeDirection(direction) {
         this.direction = direction;
+        switch(this.direction){
+            case directions.LEFT:
+                this.vel_x = -1;
+                break;
+            case directions.RIGHT:
+                this.vel_x = 1;
+                break;
+            case directions.STOP:
+                this.vel_x = 0;
+                break;
+
+                // do nothing
+        }
+
     }
 
     updatePosition() {
-        switch(this.direction){
-            case directions.LEFT:
-                this.position_x = this.position_x - this.vel_x;
-            case directions.RIGHT:
-                this.position_x = this.position_x + this.vel_x;
-            case direction.STOP:
-                // do nothing
-        }
         
+        console.log(this.vel_y);
+        this.position_x = this.position_x + this.vel_x;
         this.vel_y = this.vel_y + gravity;
         this.position_y = this.position_y + this.vel_y;
 

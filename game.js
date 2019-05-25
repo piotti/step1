@@ -5,24 +5,27 @@ class Controller {
         this.entity = entity;
     }
 
+
     keyPressed() {
-        if(keyCode == left_key) {
-            this.entity.updatePosition(directions.LEFT);
+        if(keyCode == this.left_key) {
+            this.entity.takeDirection(directions.LEFT);
         }
-        if(keyCode == right_key) {
-            this.entity.updatePosition(directions.RIGHT);
+        if(keyCode == this.right_key) {
+            this.entity.takeDirection(directions.RIGHT);
         }
-        if(keyCode == jump_key) {
+        if(keyCode == this.jump_key) {
             this.entity.jump();
         }
     }
 
     keyReleased() {
-        if(keyCode == left_key) {
-            this.entity.updatePosition(directions.STOP);
+        if(keyCode == this.left_key) {
+            if (this.entity.direction == directions.LEFT)
+                this.entity.takeDirection(directions.STOP);
         }
-        if(keyCode == right_key) {
-            this.entity.updatePosition(directions.STOP);
+        if(keyCode == this.right_key) {
+            if (this.entity.direction == directions.RIGHT)
+                this.entity.takeDirection(directions.STOP);
         }
     }
 
