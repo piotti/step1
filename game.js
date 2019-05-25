@@ -54,7 +54,7 @@ class PlayerTwoController extends Controller{
 var platform_length;
 var platform_x;
 var platform_y;
-var gravity = 1;
+var gravity = 0.5;
 
 class Game {
     constructor(entities, controllers) {

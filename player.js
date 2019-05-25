@@ -25,6 +25,7 @@ class Player {
 
         this.onstage = true;
         this.direction = directions.STOP;
+        this.lives = 3;
     }
 
     // get name() {
@@ -89,7 +90,8 @@ class Player {
     }
 
     jump() {
-        this.vel_y = this.jump_vel;
+        if (this.position_y == platform_y) 
+            this.vel_y = this.jump_vel;
     }
 
     attack() {
@@ -115,10 +117,10 @@ class Player {
         this.direction = direction;
         switch(this.direction){
             case directions.LEFT:
-                this.vel_x = -1;
+                this.vel_x = -3;
                 break;
             case directions.RIGHT:
-                this.vel_x = 1;
+                this.vel_x = 3;
                 break;
             case directions.STOP:
                 this.vel_x = 0;
@@ -130,14 +132,13 @@ class Player {
     }
 
     updatePosition() {
-        
-        console.log(this.vel_y);
         this.position_x = this.position_x + this.vel_x;
         this.vel_y = this.vel_y + gravity;
+        let last_y = this.position_y;
         this.position_y = this.position_y + this.vel_y;
 
-        if (this.position_x < platform_x + platform_length && this.position_x > platform_x) {
-            this.set_onstage(true);
+        if (this.position_x < platform_x + platform_length && this.position_x + this.width > platform_x && last_y - this.height < platform_y) {
+            this.set_onstage(true);  
             this.position_y = min(platform_y, this.position_y);
             if (this.position_y == platform_y) {
                 this.vel_y = 0;
@@ -145,9 +146,21 @@ class Player {
         } else {
             this.set_onstage(false);
         }
+
+        if (this.position_y > platform_y && !this.onstage) {
+            this.lives -= 1;
+            if (this.lives <= 0) {
+                console.log("ive died");
+            } else {
+                this.position_x = width/2;
+                this.position_y = height/2;
+                this.vel_x = 0;
+                this.vel_y = 0;
+            }
+        }
     }
 
     draw() {
-        rect(this.position_x, this.position_y, this.width, this.height);
+        rect(this.position_x, this.position_y - this.height, this.width, this.height);
     }
 }
