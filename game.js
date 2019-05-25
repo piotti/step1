@@ -5,27 +5,42 @@ class Controller {
         this.entity = entity;
     }
 
+    move_left() {
+        this.entity.takeDirection(directions.LEFT);
+    }
+
+    move_right() {
+        this.entity.takeDirection(directions.RIGHT);
+    }
+
+    stop() {
+        this.entity.takeDirection(directions.STOP);     
+    }
+
+    jump() {
+        this.entity.jump();
+    }
 
     keyPressed() {
         if(keyCode == this.left_key) {
-            this.entity.takeDirection(directions.LEFT);
+            this.move_left();
         }
         if(keyCode == this.right_key) {
-            this.entity.takeDirection(directions.RIGHT);
+            this.move_right();
         }
         if(keyCode == this.jump_key) {
-            this.entity.jump();
+            this.jump();
         }
     }
 
     keyReleased() {
         if(keyCode == this.left_key) {
             if (this.entity.direction == directions.LEFT)
-                this.entity.takeDirection(directions.STOP);
+                this.stop();
         }
         if(keyCode == this.right_key) {
             if (this.entity.direction == directions.RIGHT)
-                this.entity.takeDirection(directions.STOP);
+                this.stop();
         }
     }
 
