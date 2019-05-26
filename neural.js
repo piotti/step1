@@ -11,7 +11,7 @@ class NNController extends Controller {
     }
 
     update() {
-        console.log(this.entity);
+        // console.log(this.entity);
         let input = [
             this.entity.position_x/width,
             this.entity.position_y/height,
@@ -116,7 +116,7 @@ initNeat();
 
 /** Start the evaluation of the current generation */
 function startEvaluation(){
-  // for (var i = 0; i < 25; i++) {
+  for (var i = 0; i < 25; i++) {
     let i = 0;
     let i_0 = i * 2;
     let i_1 = i_0 + 1;
@@ -153,10 +153,17 @@ function startEvaluation(){
     c1.game = game;
     game.nn_controllers = [c0, c1];
 
-    game.start();
+    game.start(setScores, i_0, i_1);
+  }
+  // endEvaluation();
+}
 
+function setScores(i, j, score_i, score_j) {
+  neat.population[i].score = score_i;
+  neat.population[j].score = score_j;
 
-  // }
+  console.log("scored" + i + ": " + score_i );
+  console.log("scored" + j + ": " + score_j);
 }
 
 /** End the evaluation of the current generation */

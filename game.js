@@ -139,12 +139,20 @@ class Game {
 
     }
 
-    start() {
+    start(scores_callback, i, j) {
         this.started = true;
+        this.scores_callback = scores_callback;
+        this.i = i;
+        this.j = j;
     }
 
     setup() {
         background(200, 200, 200);
+    }
+
+    finishGame() {
+        this.started = false;
+        this.scores_callback(this.i, this.j, this.entities[0].getFitness(), this.entities[1].getFitness());
     }
 
     draw() {
@@ -156,6 +164,9 @@ class Game {
         for (var i = 0; i < this.entities.length; i++) {
             this.entities[i].updatePosition()
             this.entities[i].draw();
+            if (this.entities[i].dead && this.started) {
+                this.finishGame();
+            }
 
         }  
 
