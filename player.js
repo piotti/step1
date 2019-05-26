@@ -75,54 +75,9 @@ class Player {
     
     }
 
-    // get name() {
-    //     return this.name;
-    // }
-
-    // get health() {
-    //     return this.health;
-    // }
-
-    // get mana() {
-    //     return this.mana;
-    // }
-
-    // get position_x() {
-    //     return this.position_x;
-    // }
-
-    // set name(name) {
-    //     this.name = name;
-    // }
-
-    // set health(health) {
-    //     this.health = health;
-    // }
-
-    // set mana(mana) {
-    //     this.mana = mana;
-    // }
-
-    // set position_x(x) {
-    //     this.x = x;
-    // }
-
-    // get position_y() {
-    //     return this.position_y;
-    // }
-
-    // set position_y(y) {
-    //     this.y = y;
-    // }
-
-
-    // get vel_x() {
-    //     return this.vel_x;
-    // }
-
-    // get vel_y() {
-    //     return this.vel_y;
-    // }
+    reset_mana_counter() {
+        this.charge_counter = 0;
+    }
 
     set_onstage(flag) {
         this.onstage = flag;
@@ -169,28 +124,24 @@ class Player {
         console.log("AAAAAA");
         this.charge_counter += 1;
         if (this.charge_counter > 5) {
-            reset_mana_counter();
+            this.reset_mana_counter();
             this.mana += 1;
         }
-    }
-
-    reset_mana_counter() {
-        this.charge_counter = 0;
     }
 
     takeAction(action) {
         switch(action) {
             case actions.JUMP:
                 jump();
-                reset_mana_counter();
+                this.reset_mana_counter();
                 break;
             case actions.ATTACK:
                 attack();
-                reset_mana_counter();
+                this.reset_mana_counter();
                 break;
             case actions.ALT_ATTACK:
                 alt_attack();
-                reset_mana_counter();
+                this.reset_mana_counter();
                 break;
             case actions.CHARGE_MANA:
                 charge_mana();
