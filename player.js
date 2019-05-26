@@ -276,23 +276,45 @@ class Player {
     takeAction(action) {
         switch(action) {
             case actions.JUMP:
-                jump();
-                this.reset_mana_counter();
-                this.ticks_since_last_move = 0;
+                if (!this.blocking && !this.charging) {
+                    this.jump();
+                    this.reset_mana_counter();
+                    this.ticks_since_last_move = 0;
+                }
                 break;
             case actions.ATTACK:
-                attack();
-                this.reset_mana_counter();
-                this.ticks_since_last_move = 0;
+                if (!this.blocking && !this.charging) {
+                    this.attack();
+                    this.reset_mana_counter();
+                    this.ticks_since_last_move = 0;
+                }
                 break;
             case actions.ALT_ATTACK:
-                alt_attack();
-                this.reset_mana_counter();
-                this.ticks_since_last_move = 0;
+                if (!this.blocking && !this.charging) {
+                    this.alt_attack();
+                    this.reset_mana_counter();
+                    this.ticks_since_last_move = 0;
+                }
                 break;
             case actions.CHARGE_MANA:
-                charge_mana();
-                this.ticks_since_last_move = 0;
+                if (!this.blocking) {
+                    this.charge_mana();
+                }
+                break;
+            case actions.BLOCK:
+                if (!this.charging) {
+                    this.block();
+                } 
+                break;
+            case actions.MOVE_LEFT:
+                if (!this.blocking && !this.charging) {
+                    this.takeDirection(directions.LEFT);
+                }
+                break;
+            case actions.MOVE_RIGHT:
+                if (!this.blocking && !this.charging) {
+                    this.takeDirection(directions.RIGHT);
+                }
                 break;
         }
     }

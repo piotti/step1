@@ -8,11 +8,12 @@ class Controller {
         this.right_arrow = false;
     }
 
+<<<<<<< HEAD
     figure_direction(entity) {
         if(this.left_arrow && !this.right_arrow)
-            entity.takeDirection(directions.LEFT);
+            entity.takeAction(directions.LEFT);
         else if (this.right_arrow && !this.left_arrow)
-            entity.takeDirection(directions.RIGHT);
+            entity.takeAction(directions.RIGHT);
         else
             entity.takeDirection(directions.STOP);
 
@@ -45,27 +46,27 @@ class Controller {
     }
 
     jump() {
-        this.entity.jump();
+        this.entity.takeAction(actions.JUMP);
     }
 
     charge_mana() {
-        this.entity.charge_mana();
+        this.entity.takeAction(actions.CHARGE_MANA);
     }
 
     attack() {
-        this.entity.attack();
+        this.entity.takeAction(actions.ATTACK);
     }
 
     alt_attack() {
-        this.entity.alt_attack();
+        this.entity.takeAction(actions.ALT_ATTACK);
     }
 
     add_mana() {
         this.entity.add_mana();
     }
-
+    
     block() {
-        this.entity.block();
+        this.entity.takeAction(actions.BLOCK);
     }
 
     release_block() {
