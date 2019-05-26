@@ -132,6 +132,8 @@ class Player {
         this.ticks = 0;
 
         this.dead = false;
+
+        this.ticks_since_last_move = 0;
     }
 
 
@@ -274,17 +276,21 @@ class Player {
             case actions.JUMP:
                 jump();
                 this.reset_mana_counter();
+                this.ticks_since_last_move = 0;
                 break;
             case actions.ATTACK:
                 attack();
                 this.reset_mana_counter();
+                this.ticks_since_last_move = 0;
                 break;
             case actions.ALT_ATTACK:
                 alt_attack();
                 this.reset_mana_counter();
+                this.ticks_since_last_move = 0;
                 break;
             case actions.CHARGE_MANA:
                 charge_mana();
+                this.ticks_since_last_move = 0;
                 break;
         }
     }
@@ -311,8 +317,10 @@ class Player {
     getCommandedXVel() {
         switch(this.direction){
             case directions.LEFT:
+                this.ticks_since_last_move = 0;
                 return -this.max_vel;
             case directions.RIGHT:
+                this.ticks_since_last_move = 0;
                 return this.max_vel;
             case directions.STOP:
                 return 0;
@@ -322,6 +330,20 @@ class Player {
     updatePosition() {
         this.ticks += 1;
         //charge counting
+        this.ticks_since_last_move += 1;
+        if (this.ticks_since_last_move > 300) {
+            this.lives -= 1;
+            if (this.lives <= 0) {
+                console.log("ive died");
+                this.dead = true;
+            } else {
+                this.position_x = width/2;
+                this.position_y = height/2;
+                this.vel_x = 0;
+                this.vel_y = 0;
+                this.health = 100;
+            }
+        }    
         if (this.charging)
             this.charge_counter += 1;
         if (this.knockback_time > 0)
