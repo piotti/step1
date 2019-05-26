@@ -217,16 +217,7 @@ class Player {
         this.health -= damage;
         if (this.health < 0) {
             this.lives -= 1;
-            if (this.lives <= 0) {
-                console.log("ive died");
-                this.dead = true;
-            } else {
-                this.position_x = width/2;
-                this.position_y = height/2;
-                this.vel_x = 0;
-                this.vel_y = 0;
-                this.health = 100;
-            }
+            this.respawn();
         }
     }
 
@@ -351,38 +342,36 @@ class Player {
         }
     }
 
+    respawn(){
+        console.log("respawning")
+        if (this.lives <= 0) {
+            console.log("ive died");
+            this.dead = true;
+        } else {
+            this.position_x = width/2;
+            this.position_y = height/2;
+            this.vel_x = 0;
+            this.vel_y = 0;
+            this.health = 60;
+        }
+    }
+
     updatePosition() {
         this.ticks += 1;
         //charge counting
         this.ticks_since_last_move += 1;
-        if (this.ticks_since_last_move > 300) {
+        if (this.ticks_since_last_move > 200) {
+            this.ticks_since_last_move = 0;
+            console.log("too many ticks since last move, die");
             this.lives -= 1;
-            if (this.lives <= 0) {
-                console.log("ive died");
-                this.dead = true;
-            } else {
-                this.position_x = width/2;
-                this.position_y = height/2;
-                this.vel_x = 0;
-                this.vel_y = 0;
-                this.health = 100;
-            }
+            this.respawn();
+            return;
         }    
         if (this.charging)
             this.charge_counter += 1;
         if (this.knockback_time > 0)
             this.knockback_time--;
 
-
-        // this.vel_x += this.acc_x;
-        // if (this.vel_x * this.acc_x > 0) {
-        //     if (abs(this.vel_x) < this.max_vel) {
-        //         this.vel_x += this.acc_x;
-        //     }
-        // } else {
-        //     this.vel_x += this.acc_x;
-        // }
-        // this.vel_x = min(this.max_vel, max(-this.max_vel, this.vel_x));
         var commaned_xvel = this.getCommandedXVel();
         if (this.knockback_time == 0) {
             this.vel_x = commaned_xvel;
@@ -410,16 +399,7 @@ class Player {
 
         if (this.position_y > platform_y && !this.onstage) {
             this.lives -= 1;
-            if (this.lives <= 0) {
-                console.log("ive died");
-                this.dead = true;
-            } else {
-                this.position_x = width/2;
-                this.position_y = height/2;
-                this.vel_x = 0;
-                this.vel_y = 0;
-                this.health = 100;
-            }
+            this.respawn();
         }
     }
 
