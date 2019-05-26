@@ -43,7 +43,7 @@ class Controller {
         if(keyCode == this.jump_key) {
             this.jump();
         }
-        if(keyCode == this.backslash) {
+        if(keyCode == this.down_key) {
             this.charge_mana();
         }
         if(keyCode == this.attack_key) {
@@ -72,7 +72,7 @@ class PlayerOneController extends Controller{
         this.left_key = LEFT_ARROW;
         this.right_key = RIGHT_ARROW;
         this.jump_key = UP_ARROW;
-        this.backslash = 191;   
+        this.down_key = 40;   
         this.attack_key = 16;
         this.alt_attack_key = 18;
     }
@@ -84,7 +84,7 @@ class PlayerTwoController extends Controller{
         this.left_key = 65; //A
         this.right_key = 68; //D
         this.jump_key = 87; //W
-        this.backslash = 90; //Z
+        this.down_key = 83; //S
         this.attack_key = 69 //E
         this.alt_attack_key = 81; //Q
     }
