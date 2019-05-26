@@ -8,7 +8,6 @@ class Controller {
         this.right_arrow = false;
     }
 
-<<<<<<< HEAD
     figure_direction(entity) {
         if(this.left_arrow && !this.right_arrow)
             entity.takeAction(directions.LEFT);
