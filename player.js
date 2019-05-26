@@ -132,6 +132,8 @@ class Player {
 
         this.knockback_time = 0;
         this.ticks = 0;
+
+        this.dead = false;
     }
 
 
@@ -148,7 +150,6 @@ class Player {
         this.opponent = opp;
         this.arm.opp = opp;
         this.info = new PlayerInfo(this, this.player_num);
-
     }
 
     reset_mana_counter() {
@@ -216,6 +217,7 @@ class Player {
             this.lives -= 1;
             if (this.lives <= 0) {
                 console.log("ive died");
+                this.dead = true;
             } else {
                 this.position_x = width/2;
                 this.position_y = height/2;
@@ -366,6 +368,7 @@ class Player {
             this.lives -= 1;
             if (this.lives <= 0) {
                 console.log("ive died");
+                this.dead = true;
             } else {
                 this.position_x = width/2;
                 this.position_y = height/2;

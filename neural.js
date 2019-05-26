@@ -59,7 +59,7 @@ class NNController extends Controller {
         let fields = ['L', 'R', 'J', 'A', 'Alt', 'B', 'C'];
         for (var i = 0; i < fields.length; i++) {
             setColor(this.keys[i]);
-            text(fields[i], 20, 20+i*20);
+            text(fields[i], 20+50*this.entity.player_num, 20+i*20);
         }
 
     }
@@ -126,9 +126,9 @@ function initNeat(){
 initNeat();
 
 /** Start the evaluation of the current generation */
-function startEvaluation(){
+function startEvaluation(i){
   // for (var i = 0; i < 25; i++) {
-    let i = 0;
+    // let i = 0;
     let i_0 = i * 2;
     let i_1 = i_0 + 1;
     let g0 = neat.population[i_0];
@@ -164,12 +164,25 @@ function startEvaluation(){
     c1.game = game;
     game.nn_controllers = [c0, c1];
 
-    game.start();
+    game.start(setScores, i_0, i_1);
+  }
+  // endEvaluation();
+// }
 
-    drawGraph(g0.graph(500, 500), '.draw');
+    // drawGraph(g0.graph(500, 500), '.draw');
 
+function setScores(i, j, score_i, score_j) {
+    neat.population[i].score = score_i;
+    neat.population[j].score = score_j;
 
-  // }
+    console.log("scored" + i + ": " + score_i );
+    console.log("scored" + j + ": " + score_j);
+
+    if (i<24) {
+        startEvaluation(i+1);
+    } else {
+        endEvaluation();
+    }
 }
 
 /** End the evaluation of the current generation */

@@ -4,7 +4,7 @@ function setup() {
     var canvas = createCanvas(1000, 500);
     canvas.parent('p5canvas');
 
-    startEvaluation();
+    startEvaluation(0);
 
     // var entity1 = new Player('P1',
     //             100,
