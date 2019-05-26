@@ -159,6 +159,7 @@ class Player {
         if (this.mana > 10) {
             console.log("piu");
             this.mana -= 10;
+            this.em.addEntity(new Projectile(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir));
             switch(this.face_dir) {
                 case directions.LEFT:
                     //calculate hit
@@ -259,6 +260,10 @@ class Player {
                 this.vel_y = 0;
             }
         }
+    }
+
+    setEntityManager(em) {
+        this.em = em;
     }
 
     draw() {

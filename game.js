@@ -107,10 +107,16 @@ class Game {
     constructor(entities, controllers) {
         this.entities = entities;
         this.controllers = controllers;
+        this.em = new EntityManager();
+
+        for (var i = 0; i < this.entities.length; i++) {
+            this.entities[i].setEntityManager(this.em);
+        }
 
         platform_length = 600;
         platform_x = width/2-platform_length/2;
         platform_y = height-100;
+
     }
 
     setup() {
@@ -122,10 +128,13 @@ class Game {
         fill(color('gray'))
         rect(platform_x, platform_y, platform_length, 10);
         for (var i = 0; i < this.entities.length; i++) {
-            this.entities[i].updatePosition(directions.STOP)
+            this.entities[i].updatePosition()
             this.entities[i].draw();
 
         }  
+
+        this.em.updatePosition();
+        this.em.draw();
     }
 
     keyPressed() {
@@ -140,4 +149,66 @@ class Game {
         }
     }
 }
+
+
+class EntityManager {
+    constructor() {
+        this.entities = new Set();
+    }
+
+    removeEntity(ent) {
+        this.entities.delete(ent);
+    }
+
+    addEntity(ent) {
+        this.entities.add(ent);
+        ent.setEntityManager(this);
+    }
+
+
+    updatePosition() {
+        this.entities.forEach(function(e) {
+            e.updatePosition();
+        })
+    }
+
+    draw() {
+        this.entities.forEach(function(e) {
+            e.draw();
+        })
+    }
+}
+
+
+class Projectile {
+    constructor(x, y, dir) {
+        this.x = x;
+        this.y = y;
+        this.vx = dir == directions.RIGHT ? 10: -10;
+    }
+
+    setEntityManager(em) {
+        this.em = em;
+    }
+
+    updatePosition() {
+        this.x += this.vx;
+        if (this.x < -10 || this.x > width + 10) {
+            // remove
+            this.em.removeEntity(this);
+        }
+    }
+
+    draw() {
+        fill(color(0));
+        rect(this.x, this.y, (this.vx < 0 ? -10: 10), 2);
+        
+
+    }
+}
+
+
+
+
+
 
