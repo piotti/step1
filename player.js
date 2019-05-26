@@ -211,7 +211,8 @@ class Player {
 
     add_mana() {
         if (this.charge_counter > 5)
-            this.mana += this.charge_counter / 5;            
+            this.mana += this.charge_counter / 5;    
+            this.mana = min(this.mana, 100);        
         this.reset_mana_counter();
     }
 
