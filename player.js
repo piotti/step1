@@ -28,6 +28,9 @@ class PlayerInfo {
         rect(x, y+25, 104, 10);
         fill(color(100, 100, 200));
         rect(x+2, y+27, this.player.mana, 6);
+
+        fill(color(0));
+        text(this.player.getFitness(), x+50, y);
     }
 }
 
@@ -116,7 +119,6 @@ class Player {
         this.lives = 3;
 
         this.face_dir = directions.RIGHT;
-        this.info = new PlayerInfo(this, player_num);
 
 
         this.charge_counter = 0;
@@ -132,7 +134,7 @@ class Player {
 
     getFitness() {
         let fitness = 0;
-        fitness += 1000 * (this.lives - this.opp.lives);
+        fitness += 1000 * (this.lives - this.opponent.lives);
         fitness += 20 * this.mana;
         fitness += 50 * this.health;
         return fitness;
@@ -141,6 +143,8 @@ class Player {
     setOpponent(opp) {
         this.opponent = opp;
         this.arm.opp = opp;
+        this.info = new PlayerInfo(this, this.player_num);
+
     }
 
     reset_mana_counter() {
