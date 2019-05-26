@@ -123,8 +123,18 @@ class Player {
         this.charging = false;
 
         this.arm = new Arm();
+
+        this.blocking = false;
     }
 
+
+    getFitness() {
+        let fitness = 0;
+        fitness += 1000 * (this.lives - this.opp.lives);
+        fitness += 20 * this.mana;
+        fitness += 50 * this.health;
+        return fitness;
+    }
 
     setOpponent(opp) {
         this.opponent = opp;
@@ -140,6 +150,15 @@ class Player {
         this.onstage = flag;
     }
 
+    block() {
+        this.reset_mana_counter();
+        this.blocking = true;
+    }
+
+    release_block() {
+        this.blocking = false;
+    }
+
     jump() {
         if (this.position_y == platform_y) 
             this.vel_y = this.jump_vel;
@@ -148,14 +167,25 @@ class Player {
     knockback(direction, damage) {
         switch(direction){
             case directions.LEFT:
-                this.take_damage(damage);
-                this.vel_x -= 5;
-                this.vel_y = -5;
+                if(this.blocking) {
+                    this.vel_x -= 8;
+                    this.vel_y -= 8;
+                } else {
+                    this.take_damage(damage);
+                    this.vel_x -= 5;
+                    this.vel_y = -5;
+                }
+                
                 break;
             case directions.RIGHT:
-                this.take_damage(damage);
-                this.vel_x += 5;
-                this.vel_y = -5;
+                if(this.blocking) {
+                    this.vel_x += 8;
+                    this.vel_y += 8;
+                } else {
+                    this.take_damage(damage);
+                    this.vel_x += 5;
+                    this.vel_y = -5;
+                }
                 break;
         }
     }
@@ -325,6 +355,9 @@ class Player {
         let c = this.color;
         if (this.charging) {
             c = 'rgb(1, 254, 254)'
+        }
+        if (this.blocking) {
+            c = 'rgb(116, 48, 218)'
         }
         fill(color(c));
         rect(this.position_x, this.position_y - this.height, this.width, this.height);

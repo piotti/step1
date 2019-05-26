@@ -37,6 +37,14 @@ class Controller {
         this.entity.add_mana();
     }
 
+    block() {
+        this.entity.block();
+    }
+
+    release_block() {
+        this.entity.release_block();
+    }
+
     keyPressed() {
         if(keyCode == this.left_key) {
             this.move_left();
@@ -56,6 +64,9 @@ class Controller {
         if(keyCode == this.alt_attack_key){
             this.alt_attack();
         }
+        if(keyCode == this.block_key) {
+            this.block();
+        }
     }
 
     keyReleased() {
@@ -70,6 +81,9 @@ class Controller {
         if(keyCode == this.down_key) {
             this.add_mana();
         }
+        if(keyCode == this.block_key) {
+            this.release_block();
+        }
     }
 }
 
@@ -82,6 +96,7 @@ class PlayerOneController extends Controller{
         this.down_key = 40;   
         this.attack_key = 16;
         this.alt_attack_key = 18;
+        this.block_key = 191; // /
     }
 }
 
@@ -94,6 +109,7 @@ class PlayerTwoController extends Controller{
         this.down_key = 83; //S
         this.attack_key = 69 //E
         this.alt_attack_key = 81; //Q
+        this.block_key = 88; // X
     }
 }
 
