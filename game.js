@@ -33,6 +33,10 @@ class Controller {
         this.entity.alt_attack();
     }
 
+    add_mana() {
+        this.entity.add_mana();
+    }
+
     keyPressed() {
         if(keyCode == this.left_key) {
             this.move_left();
@@ -62,6 +66,9 @@ class Controller {
         if(keyCode == this.right_key) {
             if (this.entity.direction == directions.RIGHT)
                 this.stop();
+        }
+        if(keyCode == this.down_key) {
+            this.add_mana();
         }
     }
 }

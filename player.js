@@ -105,12 +105,13 @@ class Player {
 
 
         this.charge_counter = 0;
+        this.charging = false;
 
         this.arm = new Arm();
-    
     }
 
     reset_mana_counter() {
+        this.charging = false;
         this.charge_counter = 0;
     }
 
@@ -144,11 +145,9 @@ class Player {
         console.log("atak");
         switch(this.face_dir) {
             case directions.LEFT:
-                //begin attack animations
                 //calculate hit
                 break;
             case directions.RIGHT:
-                //begin attack animations
                 //calculate hit
                 break;
         }
@@ -162,11 +161,9 @@ class Player {
             this.mana -= 10;
             switch(this.face_dir) {
                 case directions.LEFT:
-                    //begin attack animations
                     //calculate hit
                     break;
                 case directions.RIGHT:
-                    //begin attack animations
                     //calculate hit
                     break;
             }
@@ -175,11 +172,14 @@ class Player {
 
     charge_mana() {
         console.log("AAAAAA");
-        this.charge_counter += 1;
-        if (this.charge_counter > 5) {
-            this.reset_mana_counter();
-            this.mana += 1;
-        }
+        // start tick counter
+        this.charging = true;
+    }
+
+    add_mana() {
+        if (this.charge_counter > 5)
+            this.mana += this.charge_counter / 5;            
+        this.reset_mana_counter();
     }
 
     takeAction(action) {
@@ -222,6 +222,10 @@ class Player {
     }
 
     updatePosition() {
+        //charge counting
+        if (this.charging)
+            this.charge_counter += 1;
+
         this.vel_x += this.acc_x;
         this.vel_x = min(this.max_vel, max(-this.max_vel, this.vel_x));
         this.position_x = this.position_x + this.vel_x;
@@ -258,7 +262,11 @@ class Player {
     }
 
     draw() {
-        fill(color(this.color));
+        let c = this.color;
+        if (this.charging) {
+            c = 'rgb(1, 254, 254)'
+        }
+        fill(color(c));
         rect(this.position_x, this.position_y - this.height, this.width, this.height);
         fill(color(0,0,0));
         ellipse(this.position_x + (this.face_dir == directions.RIGHT ? this.width-5: 5), this.position_y-this.height+10, 5, 5);
