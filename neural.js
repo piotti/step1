@@ -115,14 +115,15 @@ function getFitness(genome) {
 
 function initNeat(){
   neat = new neataptic.Neat(
-    12,
+    21,
     7,
     getFitness,
     {
       popsize: PLAYER_AMOUNT,
       mutationRate: MUTATION_RATE,
       elitism: Math.round(ELITISM_PERCENT * PLAYER_AMOUNT),
-      fitnessPopulation:false,
+      network: new neataptic.Architect.Random(21, 8, 7),
+      // fitnessPopulation:false,
     }
   );
 
@@ -132,7 +133,7 @@ initNeat();
 
 /** Start the evaluation of the current generation */
 function startEvaluation(i){
-  console.log(neat.population);
+  // console.log(neat.population);
   // for (var i = 0; i < 25; i++) {
     // let i = 0;
     let i_0 = i * 2;
@@ -181,8 +182,8 @@ function setScores(i, j, score_i, score_j) {
     neat.population[i].score = score_i;
     neat.population[j].score = score_j;
 
-    console.log("scored" + i + ": " + score_i );
-    console.log("scored" + j + ": " + score_j);
+    // console.log("scored" + i + ": " + score_i );
+    // console.log("scored" + j + ": " + score_j);
 
     if (i/2<24) {
         startEvaluation(i/2+1);
@@ -193,7 +194,7 @@ function setScores(i, j, score_i, score_j) {
 
 /** End the evaluation of the current generation */
 function endEvaluation(){
-  // console.log('Generation:', neat.generation, '- average score:', neat.getAverage());
+  console.log('Generation:', neat.generation, '- average score:', neat.getAverage());
 
   neat.sort();
   var newPopulation = [];
@@ -212,7 +213,7 @@ function endEvaluation(){
   neat.population = newPopulation;
   neat.mutate();
 
-  console.log(neat.population);
+  // console.log(neat.population);
 
   neat.generation++;
   startEvaluation(0);

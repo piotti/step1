@@ -73,7 +73,7 @@ class Arm {
             // console.log('hi');
             if(collideRectRect(x, y, extension, 5,
                 opp.position_x, opp.position_y - opp.height, opp.width, opp.height)) {
-            console.log('hey');
+            // console.log('hey');
                 opp.takePunch(dir);
                 this.connection_made = true;
             }
@@ -218,7 +218,7 @@ class Player {
         if (this.health < 0) {
             this.lives -= 1;
             if (this.lives <= 0) {
-                console.log("ive died");
+                // console.log("ive died");
                 this.dead = true;
             } else {
                 this.position_x = width/2;
@@ -231,7 +231,7 @@ class Player {
     }
 
     attack() {
-        console.log("atak");
+        // console.log("atak");
         switch(this.face_dir) {
             case directions.LEFT:
                 //calculate hit
@@ -246,7 +246,7 @@ class Player {
 
     alt_attack() {
         if (this.mana > 10) {
-            console.log("piu");
+            // console.log("piu");
             this.mana -= 10;
             this.em.addEntity(new Projectile(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir, this.opponent));
             switch(this.face_dir) {
@@ -261,7 +261,7 @@ class Player {
     }
 
     charge_mana() {
-        console.log("AAAAAA");
+        // console.log("AAAAAA");
         // start tick counter
         this.charging = true;
     }
@@ -358,7 +358,7 @@ class Player {
         if (this.ticks_since_last_move > 300) {
             this.lives -= 1;
             if (this.lives <= 0) {
-                console.log("ive died");
+                // console.log("ive died");
                 this.dead = true;
             } else {
                 this.position_x = width/2;
@@ -411,7 +411,7 @@ class Player {
         if (this.position_y > platform_y && !this.onstage) {
             this.lives -= 1;
             if (this.lives <= 0) {
-                console.log("ive died");
+                // console.log("ive died");
                 this.dead = true;
             } else {
                 this.position_x = width/2;

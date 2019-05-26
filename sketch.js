@@ -1,8 +1,10 @@
 var game;
 
+
+var run_gens = false;
 function setup() {
-    var canvas = createCanvas(1000, 500);
-    canvas.parent('p5canvas');
+    // var canvas = createCanvas(1000, 500);
+    // canvas.parent('p5canvas');
 
     startEvaluation(0);
 
@@ -35,13 +37,28 @@ function setup() {
     // game = new Game([entity1, entity2], [controller1, controller2]);
     // game.setup();
     // game.start();
+
+    // while(true) {
+    //     if(run_gens)
+    //         game.draw();
+    // }
 }
 
 var ticks = 0;
 function draw() {
-    game.draw();
+    // game.draw();
 }
 
+// setup();
+
+
+function startGens() {
+    run_gens = true;
+}
+
+function stopGens() {
+    run_gens = false;
+}
 
 function keyPressed() {
     game.keyPressed();
@@ -50,6 +67,7 @@ function keyPressed() {
 function keyReleased() {
     game.keyReleased();
 }
+
 
 
 
