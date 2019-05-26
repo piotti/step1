@@ -1,3 +1,37 @@
+
+
+
+class PlayerInfo {
+    constructor(player, player_num) {
+        this.player = player;
+        this.player_num = player_num;
+    }
+
+    draw() {
+        let x = width/2 + (this.player_num * 2 - 1 ) * 150 - 50;
+        let y = height-60;
+        // border
+        // noFill();
+        fill(color(220,220,220));
+        rect(x-10, y-15, 125, 60);
+
+        fill(color(this.player.color));
+        text(this.player.name, x, y);
+        // health bar
+        noFill();
+        rect(x, y+10, 104, 10);
+        fill(color(200, 100, 100));
+        rect(x+2, y+12, this.player.health, 6);
+
+        // mana bar
+        noFill();
+        rect(x, y+25, 104, 10);
+        fill(color(100, 100, 200));
+        rect(x+2, y+27, this.player.mana, 6);
+    }
+}
+
+
 class Player {
     health = 100;
     mana   = 0;
@@ -12,7 +46,8 @@ class Player {
                 position_y,
                 vel_x,
                 vel_y,
-                color) {
+                color,
+                player_num) {
 
         this.name   = name;
         this.health = health;
@@ -33,9 +68,61 @@ class Player {
         this.lives = 3;
 
         this.face_dir = directions.RIGHT;
+        this.info = new PlayerInfo(this, player_num);
+
 
         this.charge_counter = 0;
+    
     }
+
+    // get name() {
+    //     return this.name;
+    // }
+
+    // get health() {
+    //     return this.health;
+    // }
+
+    // get mana() {
+    //     return this.mana;
+    // }
+
+    // get position_x() {
+    //     return this.position_x;
+    // }
+
+    // set name(name) {
+    //     this.name = name;
+    // }
+
+    // set health(health) {
+    //     this.health = health;
+    // }
+
+    // set mana(mana) {
+    //     this.mana = mana;
+    // }
+
+    // set position_x(x) {
+    //     this.x = x;
+    // }
+
+    // get position_y() {
+    //     return this.position_y;
+    // }
+
+    // set position_y(y) {
+    //     this.y = y;
+    // }
+
+
+    // get vel_x() {
+    //     return this.vel_x;
+    // }
+
+    // get vel_y() {
+    //     return this.vel_y;
+    // }
 
     set_onstage(flag) {
         this.onstage = flag;
@@ -171,5 +258,7 @@ class Player {
         rect(this.position_x, this.position_y - this.height, this.width, this.height);
         fill(color(0,0,0));
         ellipse(this.position_x + (this.face_dir == directions.RIGHT ? this.width-5: 5), this.position_y-this.height+10, 5, 5);
+    
+        this.info.draw();
     }
 }
