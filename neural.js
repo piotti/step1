@@ -140,7 +140,7 @@ function startEvaluation(i){
     let g0 = neat.population[i_0];
     let g1 = neat.population[i_1];
     let p0 = new Player('P' + i_0,
-                100,
+                60,
                 20,
                 20,
                 30,
@@ -151,7 +151,7 @@ function startEvaluation(i){
                 'rgb(197,254,0)',
                 0);
     let p1 = new Player('P' + i_1,
-                100,
+                60,
                 20,
                 20,
                 30,

@@ -83,7 +83,7 @@ class Arm {
 
 
 class Player {
-    health = 100;
+    health = 60;
     mana   = 0;
     jump_vel = -10;
     max_vel = 3;
