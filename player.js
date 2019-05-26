@@ -32,6 +32,36 @@ class PlayerInfo {
 }
 
 
+class Arm {
+    constructor() {
+        this.out_dist = 20; //pixels
+        this.out_time = 5; //ticks
+        this.punching = false;
+    }
+
+    punch() {
+        this.time = 0;
+        this.punching = true;
+    }
+
+    draw(x, y, dir) {
+        this.time++;
+        if (this.time > this.out_time * 2) {
+            this.punching = false;
+            return;
+        }
+        var extension;
+        if (this.time < this.out_time) { // moving out
+            extension = this.time / this.out_time * this.out_dist;
+        } else { // moving in
+            extension = (this.out_time * 2 - this.time) / this.out_time * this.out_dist;
+        }
+        fill(color(0))
+        rect(x, y, extension * (dir == directions.RIGHT ? 1: -1), 5)
+    }
+}
+
+
 class Player {
     health = 100;
     mana   = 0;
@@ -75,6 +105,8 @@ class Player {
 
 
         this.charge_counter = 0;
+
+        this.arm = new Arm();
     
     }
 
@@ -120,6 +152,7 @@ class Player {
                 //calculate hit
                 break;
         }
+        this.arm.punch();
 
     }
 
@@ -229,7 +262,10 @@ class Player {
         rect(this.position_x, this.position_y - this.height, this.width, this.height);
         fill(color(0,0,0));
         ellipse(this.position_x + (this.face_dir == directions.RIGHT ? this.width-5: 5), this.position_y-this.height+10, 5, 5);
-    
+        
+
+        this.arm.draw(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir);
+
         this.info.draw();
     }
 }
