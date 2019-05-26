@@ -1,6 +1,6 @@
 class Player {
     health = 100;
-    mana   = 100;
+    mana   = 0;
     jump_vel = -10;
     max_vel = 3;
     constructor(name,
@@ -33,64 +33,9 @@ class Player {
         this.lives = 3;
 
         this.face_dir = directions.RIGHT;
+
+        this.charge_counter = 0;
     }
-
-    // get name() {
-    //     return this.name;
-    // }
-
-    // get health() {
-    //     return this.health;
-    // }
-
-    // get mana() {
-    //     return this.mana;
-    // }
-
-    // get position_x() {
-    //     return this.position_x;
-    // }
-
-    // set name(name) {
-    //     this.name = name;
-    // }
-
-    // set health(health) {
-    //     this.health = health;
-    // }
-
-    // set mana(mana) {
-    //     this.mana = mana;
-    // }
-
-    // set position_x(x) {
-    //     this.x = x;
-    // }
-
-    // get position_y() {
-    //     return this.position_y;
-    // }
-
-    // set position_y(y) {
-    //     this.y = y;
-    // }
-
-
-    // get vel_x() {
-    //     return this.vel_x;
-    // }
-
-    // get vel_y() {
-    //     return this.vel_y;
-    // }
-
-    // set vel_x(vel_x) {
-    //     this.vel_x = vel_x;
-    // }
-
-    // set vel_y(vel_y) {
-    //     this.vel_y = vel_y;
-    // }
 
     set_onstage(flag) {
         this.onstage = flag;
@@ -102,23 +47,65 @@ class Player {
     }
 
     attack() {
+        console.log("atak");
+        switch(this.face_dir) {
+            case directions.LEFT:
+                //begin attack animations
+                //calculate hit
+                break;
+            case directions.RIGHT:
+                //begin attack animations
+                //calculate hit
+                break;
+        }
 
     }
 
     alt_attack() {
+        if (this.mana > 10) {
+            console.log("piu");
+            this.mana -= 10;
+            switch(this.face_dir) {
+                case directions.LEFT:
+                    //begin attack animations
+                    //calculate hit
+                    break;
+                case directions.RIGHT:
+                    //begin attack animations
+                    //calculate hit
+                    break;
+            }
+        } 
+    }
 
+    charge_mana() {
+        this.charge_counter += 1;
+        if (this.charge_counter > 5) {
+            reset_mana_counter();
+            this.mana += 1;
+        }
+    }
+
+    reset_mana_counter() {
+        this.charge_counter = 0;
     }
 
     takeAction(action) {
         switch(action) {
             case actions.JUMP:
                 jump();
+                reset_mana_counter();
                 break;
             case actions.ATTACK:
                 attack();
+                reset_mana_counter();
                 break;
             case actions.ALT_ATTACK:
                 alt_attack();
+                reset_mana_counter();
+                break;
+            case actions.CHARGE_MANA:
+                charge_mana();
                 break;
         }
     }
@@ -137,7 +124,6 @@ class Player {
             case directions.STOP:
                 this.acc_x = 0;
                 break;
-
                 // do nothing
         }
 

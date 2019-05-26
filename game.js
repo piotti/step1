@@ -21,6 +21,18 @@ class Controller {
         this.entity.jump();
     }
 
+    charge_mana() {
+        this.entity.charge_mana();
+    }
+
+    attack() {
+        this.entity.attack();
+    }
+
+    alt_attack_key() {
+        this.entity.alt_attack_key();
+    }
+
     keyPressed() {
         if(keyCode == this.left_key) {
             this.move_left();
@@ -30,6 +42,15 @@ class Controller {
         }
         if(keyCode == this.jump_key) {
             this.jump();
+        }
+        if(keyCode == this.backslash) {
+            this.charge_mana();
+        }
+        if(keyCode == this.attack_key) {
+            this.attack();
+        }
+        if(keyCode == this.alt_attack_key){
+            this.alt_attack_key();
         }
     }
 
@@ -43,8 +64,6 @@ class Controller {
                 this.stop();
         }
     }
-
-
 }
 
 class PlayerOneController extends Controller{
@@ -53,6 +72,9 @@ class PlayerOneController extends Controller{
         this.left_key = LEFT_ARROW;
         this.right_key = RIGHT_ARROW;
         this.jump_key = UP_ARROW;
+        this.backslash = 191;   
+        this.attack_key = 16;
+        this.alt_attack_key = 18;
     }
 }
 
@@ -62,6 +84,9 @@ class PlayerTwoController extends Controller{
         this.left_key = 65; //A
         this.right_key = 68; //D
         this.jump_key = 87; //W
+        this.backslash = 90; //Z
+        this.attack_key = 69 //E
+        this.alt_attack_key = 81; //Q
     }
 }
 
