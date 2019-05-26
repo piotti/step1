@@ -3,8 +3,8 @@ var game;
 
 var run_gens = false;
 function setup() {
-    // var canvas = createCanvas(1000, 500);
-    // canvas.parent('p5canvas');
+    var canvas = createCanvas(1000, 500);
+    canvas.parent('p5canvas');
 
     startEvaluation(0);
 
@@ -46,7 +46,7 @@ function setup() {
 
 var ticks = 0;
 function draw() {
-    // game.draw();
+    game.draw();
 }
 
 // setup();
