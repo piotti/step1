@@ -37,6 +37,9 @@ class Player {
     mana   = 0;
     jump_vel = -10;
     max_vel = 3;
+    attack_damage = 4;
+    alt_attack_damage = 2;
+
     constructor(name,
                 health,
                 mana,
@@ -86,6 +89,23 @@ class Player {
     jump() {
         if (this.position_y == platform_y) 
             this.vel_y = this.jump_vel;
+    }
+
+    knockback(direction, damage) {
+        switch(direction){
+            case direction.LEFT:
+                take_damage(damage);
+                this.position_x -= 3;
+                break;
+            case direction.RIGHT:
+                take_damage(damage);
+                this.position_x += 3;
+                break;
+        }
+    }
+
+    take_damage(damage) {
+        this.health -= damage;
     }
 
     attack() {
