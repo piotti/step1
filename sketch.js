@@ -18,7 +18,7 @@ function setup() {
                 height/2,
                 0,
                 0,
-                'blue');
+                'magenta');
     var entity2 = new Player('P2',
                 100,
                 100,

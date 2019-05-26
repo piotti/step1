@@ -1,7 +1,8 @@
 class Player {
     health = 100;
     mana   = 100;
-    jump_vel = -10; 
+    jump_vel = -10;
+    max_vel = 3;
     constructor(name,
                 health,
                 mana,
@@ -23,12 +24,15 @@ class Player {
         this.position_y   = position_y;
         this.vel_x        = vel_x;
         this.vel_y        = vel_y;
+        this.acc_x = 0;
 
         this.color = color;
 
         this.onstage = true;
         this.direction = directions.STOP;
         this.lives = 3;
+
+        this.face_dir = directions.RIGHT;
     }
 
     // get name() {
@@ -109,10 +113,13 @@ class Player {
         switch(action) {
             case actions.JUMP:
                 jump();
+                break;
             case actions.ATTACK:
                 attack();
+                break;
             case actions.ALT_ATTACK:
                 alt_attack();
+                break;
         }
     }
 
@@ -120,13 +127,15 @@ class Player {
         this.direction = direction;
         switch(this.direction){
             case directions.LEFT:
-                this.vel_x = -3;
+                this.face_dir = directions.LEFT;
+                this.acc_x = -1;
                 break;
             case directions.RIGHT:
-                this.vel_x = 3;
+                this.face_dir = directions.RIGHT;
+                this.acc_x = 1;
                 break;
             case directions.STOP:
-                this.vel_x = 0;
+                this.acc_x = 0;
                 break;
 
                 // do nothing
@@ -135,13 +144,20 @@ class Player {
     }
 
     updatePosition() {
+        this.vel_x += this.acc_x;
+        this.vel_x = min(this.max_vel, max(-this.max_vel, this.vel_x));
         this.position_x = this.position_x + this.vel_x;
         this.vel_y = this.vel_y + gravity;
         let last_y = this.position_y;
         this.position_y = this.position_y + this.vel_y;
 
         if (this.position_x < platform_x + platform_length && this.position_x + this.width > platform_x && last_y - this.height < platform_y) {
-            this.set_onstage(true);  
+            this.set_onstage(true); 
+            if (this.direction == directions.STOP) {
+                this.vel_x += this.vel_x > 0 ? -.5 : 0.5;
+                if (abs(this.vel_x) <= 0.5)
+                    this.vel_x = 0;
+            }
             this.position_y = min(platform_y, this.position_y);
             if (this.position_y == platform_y) {
                 this.vel_y = 0;
@@ -166,5 +182,7 @@ class Player {
     draw() {
         fill(color(this.color));
         rect(this.position_x, this.position_y - this.height, this.width, this.height);
+        fill(color(0,0,0));
+        ellipse(this.position_x + (this.face_dir == directions.RIGHT ? this.width-5: 5), this.position_y-this.height+10, 5, 5);
     }
 }
