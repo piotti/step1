@@ -1,4 +1,13 @@
 
+var Controller = require('./game.js').Controller;
+var Player = require('./player.js').Player;
+var neataptic = require('neataptic');
+var game_obj = require('./game.js');
+var directions = require('./types.js');
+var Game = game_obj.Game;
+
+var width = 1000;
+var height = 500;
 
 class NNController extends Controller {
     constructor(entity, opp, genome) {
@@ -8,6 +17,18 @@ class NNController extends Controller {
         this.keys = [false, false, false, false, false, false, false];
         this.start_moves = ['move_left', 'move_right', 'jump', 'attack', 'alt_attack', 'block', 'charge_mana'];
         this.stop_moves = ['stop_left', 'stop_right', 'default', 'default', 'default', 'release_block', 'add_mana'];
+    }
+
+    draw() {
+        // draw fields
+        function setColor(on) {
+            fill(color(on ? 'red': 'black'));
+        }
+        let fields = ['L', 'R', 'J', 'A', 'Alt', 'B', 'C'];
+        for (var i = 0; i < fields.length; i++) {
+            setColor(this.keys[i]);
+            text(fields[i], 20+50*this.entity.player_num, 20+i*20);
+        }
     }
 
     update() {
@@ -21,14 +42,14 @@ class NNController extends Controller {
             this.opp.position_y/height,
             this.opp.vel_x / 8.0,
             this.opp.vel_y / 8.0,
-            int(this.opp.blocking),
-            int(this.opp.charging),
-            (this.entity.position_x+this.entity.width-platform_x)/width,
-            (platform_x+platform_length - this.entity.position_x)/width,            
-            int(this.entity.face_dir == directions.RIGHT),
-            int(this.entity.face_dir == directions.LEFT),
-            int(this.opp.face_dir == directions.RIGHT),
-            int(this.opp.face_dir == directions.LEFT),
+            Number(this.opp.blocking),
+            Number(this.opp.charging),
+            (this.entity.position_x+this.entity.width-game_obj.platform_x)/width,
+            (game_obj.platform_x+game_obj.platform_length - this.entity.position_x)/width,            
+            Number(this.entity.face_dir == directions.RIGHT),
+            Number(this.entity.face_dir == directions.LEFT),
+            Number(this.opp.face_dir == directions.RIGHT),
+            Number(this.opp.face_dir == directions.LEFT),
             this.entity.health/100,
             this.entity.mana/100,
             this.entity.lives/3,
@@ -52,15 +73,7 @@ class NNController extends Controller {
         }
 
 
-        // draw fields
-        function setColor(on) {
-            fill(color(on ? 'red': 'black'));
-        }
-        let fields = ['L', 'R', 'J', 'A', 'Alt', 'B', 'C'];
-        for (var i = 0; i < fields.length; i++) {
-            setColor(this.keys[i]);
-            text(fields[i], 20+50*this.entity.player_num, 20+i*20);
-        }
+        
 
     }
 }
@@ -122,7 +135,7 @@ function initNeat(){
       popsize: PLAYER_AMOUNT,
       mutationRate: MUTATION_RATE,
       elitism: Math.round(ELITISM_PERCENT * PLAYER_AMOUNT),
-      network: new neataptic.Architect.Random(21, 8, 7),
+      network: new neataptic.architect.Random(21, 8, 7),
       // fitnessPopulation:false,
     }
   );
@@ -172,6 +185,8 @@ function startEvaluation(i){
     game.nn_controllers = [c0, c1];
 
     game.start(setScores, i_0, i_1);
+
+    return game;
   }
   // endEvaluation();
 // }
@@ -218,3 +233,9 @@ function endEvaluation(){
   neat.generation++;
   startEvaluation(0);
 }
+
+module.exports = {
+    setScores: setScores,
+    startEvaluation: startEvaluation,
+}
+

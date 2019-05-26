@@ -1,4 +1,17 @@
+var width = 1000;
+var height = 500;
 
+var directions = require('./types.js');
+var game = require('./game.js');
+var collideRectRect = function(ax, ay, aw, ah, bx, by, bw, bh) {
+    let ax2 = ax + aw;
+    let ay2 = ay + ah;
+    let bx2 = bx + bw;
+    let by2 = by + bh;
+
+    return ax < bx2 && ax2 > bx && ay < by2 && ay2 > by;
+
+}
 
 
 class PlayerInfo {
@@ -42,6 +55,11 @@ class Arm {
         this.out_dist = 20; //pixels
         this.out_time = 5; //ticks
         this.punching = false;
+
+        this.x = 0;
+        this.y = 0;
+        this.dir = 0;
+        this.extension = 0;
     }
 
     punch() {
@@ -50,7 +68,7 @@ class Arm {
         this.connection_made = false;
     }
 
-    draw(x, y, dir) {
+    tick(x, y, dir) {
         this.time++;
         if (this.time > this.out_time * 2) {
             this.punching = false;
@@ -62,10 +80,11 @@ class Arm {
         } else { // moving in
             extension = (this.out_time * 2 - this.time) / this.out_time * this.out_dist;
         }
-        fill(color(0))
-        if (dir == directions.LEFT)
-            x -= extension;
-        rect(x, y, extension, 5)
+
+        this.extension = extension;
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
 
         // collision detection
         if (!this.connection_made) {
@@ -79,16 +98,18 @@ class Arm {
             }
         }
     }
+
+    draw() {
+        fill(color(0))
+        if (dir == directions.LEFT)
+            x -= extension;
+        rect(x, y, extension, 5)
+    }
 }
 
 
 class Player {
-    health = 60;
-    mana   = 0;
-    jump_vel = -10;
-    max_vel = 3;
-    attack_damage = 12;
-    alt_attack_damage = 6;
+    
 
     constructor(name,
                 health,
@@ -101,6 +122,11 @@ class Player {
                 vel_y,
                 color,
                 player_num) {
+
+        this.jump_vel = -10;
+        this.max_vel = 3;
+        this.attack_damage = 12;
+        this.alt_attack_damage = 6;
 
         this.name   = name;
         this.health = health;
@@ -173,7 +199,7 @@ class Player {
     }
 
     jump() {
-        if (this.position_y == platform_y) 
+        if (this.position_y == game.platform_y) 
             this.vel_y = this.jump_vel;
     }
 
@@ -378,15 +404,15 @@ class Player {
             this.vel_x = commaned_xvel;
         }
         this.position_x = this.position_x + this.vel_x;
-        this.vel_y = this.vel_y + gravity;
+        this.vel_y = this.vel_y + game.gravity;
         let last_y = this.position_y;
         this.position_y = this.position_y + this.vel_y;
 
-        if (this.position_x < platform_x + platform_length && this.position_x + this.width > platform_x && last_y - this.height < platform_y) {
+        if (this.position_x < game.platform_x + game.platform_length && this.position_x + this.width > game.platform_x && last_y - this.height < game.platform_y) {
             this.set_onstage(true);
 
-            this.position_y = min(platform_y, this.position_y);
-            if (this.position_y == platform_y) {
+            this.position_y = min(game.platform_y, this.position_y);
+            if (this.position_y == game.platform_y) {
                 this.vel_y = 0;
                 if (this.direction == directions.STOP) {
                     this.vel_x += this.vel_x > 0 ? -.5 : 0.5;
@@ -398,11 +424,14 @@ class Player {
             this.set_onstage(false);
         }
 
-        if (this.position_y > platform_y && !this.onstage) {
+        if (this.position_y > game.platform_y && !this.onstage) {
             this.lives -= 1;
 
             this.respawn();
         }
+
+        this.arm.tick(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir);
+
     }
 
     setEntityManager(em) {
@@ -422,9 +451,15 @@ class Player {
         fill(color(0,0,0));
         ellipse(this.position_x + (this.face_dir == directions.RIGHT ? this.width-5: 5), this.position_y-this.height+10, 5, 5);
         
-
-        this.arm.draw(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir);
+        this.arm.draw();
 
         this.info.draw();
     }
 }
+
+
+
+module.exports = {
+    Player: Player,
+}
+

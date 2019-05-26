@@ -1,3 +1,7 @@
+var width = 1000;
+var height = 500;
+
+var directions = require('./types.js');
 
 
 class Controller {
@@ -180,6 +184,23 @@ class Game {
         this.scores_callback(this.i, this.j, this.entities[0].getFitness(), this.entities[1].getFitness());
     }
 
+    tick() {
+        if(!this.started)
+            return;
+        for (var i = 0; i < this.entities.length; i++) {
+            this.entities[i].updatePosition();
+            if (this.entities[i].dead) {
+                this.finishGame();
+            }
+        }  
+        
+        this.em.updatePosition();
+
+        for (var i = 0; i < this.nn_controllers.length; i++) {
+            this.nn_controllers[i].update();
+        }
+    }
+
     draw() {
         if(!this.started)
             return;
@@ -187,19 +208,14 @@ class Game {
         fill(color('gray'))
         rect(platform_x, platform_y, platform_length, 10);
         for (var i = 0; i < this.entities.length; i++) {
-            this.entities[i].updatePosition();
-            if (this.entities[i].dead) {
-                this.finishGame();
-            } else {
+            if (!this.entities[i].dead) {
                 this.entities[i].draw();
             }
         }  
-
-        this.em.updatePosition();
         this.em.draw();
 
         for (var i = 0; i < this.nn_controllers.length; i++) {
-            this.nn_controllers[i].update();
+            this.nn_controllers[i].draw();
         }
     }
 
@@ -286,11 +302,20 @@ class Projectile {
     draw() {
         fill(color(0));
         rect(this.x, this.y, (this.vx < 0 ? -10: 10), 2);
-        
-
     }
 }
 
+
+module.exports = {
+    Controller: Controller,
+    Game: Game,
+    EntityManager: EntityManager,
+    Projectile: Projectile,
+    gravity: gravity,
+    platform_y: platform_y,
+    platform_x: platform_x,
+    platform_length: platform_length,
+}
 
 
 
