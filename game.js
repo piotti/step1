@@ -1,7 +1,9 @@
 var width = 1000;
 var height = 500;
 
-var directions = require('./types.js');
+var types = require('./types.js');
+var directions = types.directions;
+var actions = types.actions;
 
 
 class Controller {
@@ -14,9 +16,9 @@ class Controller {
 
     figure_direction(entity) {
         if(this.left_arrow && !this.right_arrow)
-            entity.takeAction(directions.LEFT);
+            entity.takeAction(actions.MOVE_LEFT);
         else if (this.right_arrow && !this.left_arrow)
-            entity.takeAction(directions.RIGHT);
+            entity.takeAction(actions.MOVE_RIGHT);
         else
             entity.takeDirection(directions.STOP);
 
@@ -143,10 +145,9 @@ class PlayerTwoController extends Controller{
 }
 
 
-var platform_length;
-var platform_x;
-var platform_y;
-var gravity = 0.5;
+
+
+
 
 class Game {
     constructor(entities, controllers) {
@@ -158,9 +159,9 @@ class Game {
             this.entities[i].setEntityManager(this.em);
         }
 
-        platform_length = 600;
-        platform_x = width/2-platform_length/2;
-        platform_y = height-100;
+        game.platform_length = 600;
+        game.platform_x = width/2-game.platform_length/2;
+        game.platform_y = height-100;
 
         this.nn_controllers = [];
 
@@ -180,6 +181,8 @@ class Game {
     }
 
     finishGame() {
+        if(!this.started)
+            return;
         this.started = false;
         this.scores_callback(this.i, this.j, this.entities[0].getFitness(), this.entities[1].getFitness());
     }
@@ -206,7 +209,7 @@ class Game {
             return;
         background(200, 200, 200);
         fill(color('gray'))
-        rect(platform_x, platform_y, platform_length, 10);
+        rect(game.platform_x, game.platform_y, game.platform_length, 10);
         for (var i = 0; i < this.entities.length; i++) {
             if (!this.entities[i].dead) {
                 this.entities[i].draw();
@@ -306,16 +309,41 @@ class Projectile {
 }
 
 
-module.exports = {
+var collideRectRect = function(ax, ay, aw, ah, bx, by, bw, bh) {
+    let ax2 = ax + aw;
+    let ay2 = ay + ah;
+    let bx2 = bx + bw;
+    let by2 = by + bh;
+
+    return ax < bx2 && ax2 > bx && ay < by2 && ay2 > by;
+
+}
+
+
+var game = {
     Controller: Controller,
     Game: Game,
     EntityManager: EntityManager,
     Projectile: Projectile,
-    gravity: gravity,
-    platform_y: platform_y,
-    platform_x: platform_x,
-    platform_length: platform_length,
+    gravity: 0.5,
+    platform_y: 0,
+    platform_x: 0,
+    platform_length: 0,
+    collideRectRect: collideRectRect,
 }
+
+module.exports = game;
+
+// module.exports = {
+//     Controller: Controller,
+//     Game: Game,
+//     EntityManager: EntityManager,
+//     Projectile: Projectile,
+//     gravity: gravity,
+//     game.platform_y: game.platform_y,
+//     platform_x: platform_x,
+//     platform_length: platform_length,
+// }
 
 
 

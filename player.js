@@ -1,17 +1,14 @@
 var width = 1000;
 var height = 500;
 
-var directions = require('./types.js');
+
+var directions = require('./types.js').directions;
+var actions = require('./types.js').actions;
 var game = require('./game.js');
-var collideRectRect = function(ax, ay, aw, ah, bx, by, bw, bh) {
-    let ax2 = ax + aw;
-    let ay2 = ay + ah;
-    let bx2 = bx + bw;
-    let by2 = by + bh;
 
-    return ax < bx2 && ax2 > bx && ay < by2 && ay2 > by;
 
-}
+
+
 
 
 class PlayerInfo {
@@ -90,7 +87,7 @@ class Arm {
         if (!this.connection_made) {
             var opp = this.opp;
             // console.log('hi');
-            if(collideRectRect(x, y, extension, 5,
+            if(game.collideRectRect(x, y, extension, 5,
                 opp.position_x, opp.position_y - opp.height, opp.width, opp.height)) {
             // console.log('hey');
                 opp.takePunch(dir);
@@ -100,10 +97,12 @@ class Arm {
     }
 
     draw() {
+        if(!this.punching)
+            return;
         fill(color(0))
-        if (dir == directions.LEFT)
-            x -= extension;
-        rect(x, y, extension, 5)
+        if (this.dir == directions.LEFT)
+            this.x -= this.extension;
+        rect(this.x, this.y, this.extension, 5)
     }
 }
 
@@ -265,7 +264,7 @@ class Player {
         if (this.mana > 10) {
             // console.log("piu");
             this.mana -= 10;
-            this.em.addEntity(new Projectile(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir, this.opponent));
+            this.em.addEntity(new game.Projectile(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir, this.opponent));
             switch(this.face_dir) {
                 case directions.LEFT:
                     //calculate hit
@@ -286,7 +285,7 @@ class Player {
     add_mana() {
         if (this.charge_counter > 5)
             this.mana += this.charge_counter / 5;    
-            this.mana = min(this.mana, 100);        
+            this.mana = Math.min(this.mana, 100);        
         this.reset_mana_counter();
     }
 
@@ -369,9 +368,9 @@ class Player {
     }
 
     respawn(){
-        console.log("respawning")
+        // console.log("respawning")
         if (this.lives <= 0) {
-            console.log("ive died");
+            // console.log("ive died");
             this.dead = true;
         } else {
             this.position_x = width/2;
@@ -384,11 +383,12 @@ class Player {
 
     updatePosition() {
         this.ticks += 1;
+        // console.log(this.direction);
         //charge counting
         this.ticks_since_last_move += 1;
         if (this.ticks_since_last_move > 200) {
             this.ticks_since_last_move = 0;
-            console.log("too many ticks since last move, die");
+            // console.log("too many ticks since last move, die");
             this.lives -= 1;
 
             this.respawn();
@@ -411,12 +411,12 @@ class Player {
         if (this.position_x < game.platform_x + game.platform_length && this.position_x + this.width > game.platform_x && last_y - this.height < game.platform_y) {
             this.set_onstage(true);
 
-            this.position_y = min(game.platform_y, this.position_y);
+            this.position_y = Math.min(game.platform_y, this.position_y);
             if (this.position_y == game.platform_y) {
                 this.vel_y = 0;
                 if (this.direction == directions.STOP) {
                     this.vel_x += this.vel_x > 0 ? -.5 : 0.5;
-                    if (abs(this.vel_x) <= 0.5)
+                    if (Math.abs(this.vel_x) <= 0.5)
                         this.vel_x = 0;
                 }
             }

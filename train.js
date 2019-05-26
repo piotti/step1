@@ -8,8 +8,13 @@ console.log(neat.setScores);
 
 
 
-var game = neat.startEvaluation(0);
+
+neat.startEvaluation(0);
+
+var game_obj = neat.game_obj;
+
+// console.log(game);
 
 while(true) {
-    game.tick();
+    game_obj.game.tick();
 }

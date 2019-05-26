@@ -2,12 +2,21 @@
 var Controller = require('./game.js').Controller;
 var Player = require('./player.js').Player;
 var neataptic = require('neataptic');
-var game_obj = require('./game.js');
-var directions = require('./types.js');
-var Game = game_obj.Game;
+var game = require('./game.js');
+var directions = require('./types.js').directions;
+
+var setNewGame = require('./train.js').setNewGame;
+console.log(setNewGame);
+
+
 
 var width = 1000;
 var height = 500;
+
+
+var game_obj = {
+    game: null,
+}
 
 class NNController extends Controller {
     constructor(entity, opp, genome) {
@@ -44,8 +53,8 @@ class NNController extends Controller {
             this.opp.vel_y / 8.0,
             Number(this.opp.blocking),
             Number(this.opp.charging),
-            (this.entity.position_x+this.entity.width-game_obj.platform_x)/width,
-            (game_obj.platform_x+game_obj.platform_length - this.entity.position_x)/width,            
+            (this.entity.position_x+this.entity.width-game.platform_x)/width,
+            (game.platform_x+game.platform_length - this.entity.position_x)/width,            
             Number(this.entity.face_dir == directions.RIGHT),
             Number(this.entity.face_dir == directions.LEFT),
             Number(this.opp.face_dir == directions.RIGHT),
@@ -179,14 +188,15 @@ function startEvaluation(i){
     p1.setOpponent(p0);
     let c0 = new NNController(p0, p1, g0);
     let c1 = new NNController(p1, p0, g1);
-    game = new Game([p0, p1], [c0, c1]);
-    c0.game = game;
-    c1.game = game;
-    game.nn_controllers = [c0, c1];
+    let gm = new game.Game([p0, p1], [c0, c1]);
+    c0.game = gm;
+    c1.game = gm;
+    gm.nn_controllers = [c0, c1];
 
-    game.start(setScores, i_0, i_1);
+    gm.start(setScores, i_0, i_1);
 
-    return game;
+    game_obj.game = gm;
+
   }
   // endEvaluation();
 // }
@@ -237,5 +247,6 @@ function endEvaluation(){
 module.exports = {
     setScores: setScores,
     startEvaluation: startEvaluation,
+    game_obj: game_obj, 
 }
 

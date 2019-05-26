@@ -1,16 +1,16 @@
-var game;
 
+var game_obj;
 
 var run_gens = false;
 function setup() {
     var canvas = createCanvas(1000, 500);
     canvas.parent('p5canvas');
 
-    startEvaluation(0);
+    game_obj = startEvaluation(0);
 
     // var entity1 = new Player('P1',
-    //             100,
-    //             100,
+    //             60,
+    //             20,
     //             20,
     //             30,
     //             width/2,
@@ -20,8 +20,8 @@ function setup() {
     //             'rgb(197,254,0)',
     //             0);
     // var entity2 = new Player('P2',
-    //             100,
-    //             0,
+    //             60,
+    //             20,
     //             20,
     //             30,
     //             width/2+50,
@@ -34,19 +34,15 @@ function setup() {
     // entity2.setOpponent(entity1);
     // var controller1 = new PlayerOneController(entity1)
     // var controller2 = new PlayerTwoController(entity2)
-    // game = new Game([entity1, entity2], [controller1, controller2]);
-    // game.setup();
-    // game.start();
-
-    // while(true) {
-    //     if(run_gens)
-    //         game.draw();
-    // }
+    // game_obj = new Game([entity1, entity2], [controller1, controller2]);
+    // game_obj.setup();
+    // game_obj.start();
 }
 
 var ticks = 0;
 function draw() {
-    game.draw();
+    game_obj.tick();
+    game_obj.draw();
 }
 
 // setup();
@@ -61,11 +57,11 @@ function stopGens() {
 }
 
 function keyPressed() {
-    game.keyPressed();
+    game_obj.keyPressed();
 }
 
 function keyReleased() {
-    game.keyReleased();
+    game_obj.keyReleased();
 }
 
 
