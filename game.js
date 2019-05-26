@@ -5,44 +5,44 @@ class Controller {
         this.entity = entity;
     }
 
-    move_left() {
-        this.entity.takeDirection(directions.LEFT);
+    move_left(entity) {
+        entity.takeDirection(directions.LEFT);
     }
 
-    move_right() {
-        this.entity.takeDirection(directions.RIGHT);
+    move_right(entity) {
+        entity.takeDirection(directions.RIGHT);
     }
 
-    stop() {
-        this.entity.takeDirection(directions.STOP);     
+    stop(entity) {
+        entity.takeDirection(directions.STOP);     
     }
 
-    jump() {
-        this.entity.jump();
+    jump(entity) {
+        entity.jump();
     }
 
-    charge_mana() {
-        this.entity.charge_mana();
+    charge_mana(entity) {
+        entity.charge_mana();
     }
 
-    attack() {
-        this.entity.attack();
+    attack(entity) {
+        entity.attack();
     }
 
-    alt_attack() {
-        this.entity.alt_attack();
+    alt_attack(entity) {
+        entity.alt_attack();
     }
 
-    add_mana() {
-        this.entity.add_mana();
+    add_mana(entity) {
+        entity.add_mana();
     }
 
-    block() {
-        this.entity.block();
+    block(entity) {
+        entity.block();
     }
 
-    release_block() {
-        this.entity.release_block();
+    release_block(entity) {
+        entity.release_block();
     }
 
     keyPressed() {
@@ -133,6 +133,14 @@ class Game {
         platform_x = width/2-platform_length/2;
         platform_y = height-100;
 
+        this.nn_controllers = [];
+
+        this.started = false;
+
+    }
+
+    start() {
+        this.started = true;
     }
 
     setup() {
@@ -140,6 +148,8 @@ class Game {
     }
 
     draw() {
+        if(!this.started)
+            return;
         background(200, 200, 200);
         fill(color('gray'))
         rect(platform_x, platform_y, platform_length, 10);
@@ -151,15 +161,23 @@ class Game {
 
         this.em.updatePosition();
         this.em.draw();
+
+        for (var i = 0; i < this.nn_controllers.length; i++) {
+            this.nn_controllers[i].update();
+        }
     }
 
     keyPressed() {
+        if(!this.started)
+            return;
         for (var i = 0; i < this.controllers.length; i++) {
             this.controllers[i].keyPressed();
         }
     }
 
     keyReleased() {
+        if(!this.started)
+            return;
         for (var i = 0; i < this.controllers.length; i++) {
             this.controllers[i].keyReleased();
         }
