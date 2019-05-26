@@ -169,8 +169,20 @@ class Player {
     }
 
     take_damage(damage) {
-        console.log(this.health);
+        
         this.health -= damage;
+        if (this.health < 0) {
+            this.lives -= 1;
+            if (this.lives <= 0) {
+                console.log("ive died");
+            } else {
+                this.position_x = width/2;
+                this.position_y = height/2;
+                this.vel_x = 0;
+                this.vel_y = 0;
+                this.health = 100;
+            }
+        }
     }
 
     attack() {
@@ -300,6 +312,7 @@ class Player {
                 this.position_y = height/2;
                 this.vel_x = 0;
                 this.vel_y = 0;
+                this.health = 100;
             }
         }
     }
