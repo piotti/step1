@@ -109,11 +109,15 @@ OUTPUTS:
 
 var neat;
 
+function getFitness(genome) {
+    return genome.score;
+}
+
 function initNeat(){
   neat = new neataptic.Neat(
     12,
     7,
-    null,
+    getFitness,
     {
       popsize: PLAYER_AMOUNT,
       mutationRate: MUTATION_RATE,
@@ -180,8 +184,8 @@ function setScores(i, j, score_i, score_j) {
     console.log("scored" + i + ": " + score_i );
     console.log("scored" + j + ": " + score_j);
 
-    if (i<24) {
-        startEvaluation(i+1);
+    if (i/2<24) {
+        startEvaluation(i/2+1);
     } else {
         endEvaluation();
     }
@@ -208,6 +212,8 @@ function endEvaluation(){
   neat.population = newPopulation;
   neat.mutate();
 
+  console.log(neat.population);
+
   neat.generation++;
-  startEvaluation();
+  startEvaluation(0);
 }
