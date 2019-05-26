@@ -118,6 +118,7 @@ function initNeat(){
       popsize: PLAYER_AMOUNT,
       mutationRate: MUTATION_RATE,
       elitism: Math.round(ELITISM_PERCENT * PLAYER_AMOUNT),
+      fitnessPopulation:false,
     }
   );
 
@@ -127,6 +128,7 @@ initNeat();
 
 /** Start the evaluation of the current generation */
 function startEvaluation(i){
+  console.log(neat.population);
   // for (var i = 0; i < 25; i++) {
     // let i = 0;
     let i_0 = i * 2;
@@ -187,7 +189,7 @@ function setScores(i, j, score_i, score_j) {
 
 /** End the evaluation of the current generation */
 function endEvaluation(){
-  console.log('Generation:', neat.generation, '- average score:', neat.getAverage());
+  // console.log('Generation:', neat.generation, '- average score:', neat.getAverage());
 
   neat.sort();
   var newPopulation = [];

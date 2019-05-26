@@ -18,19 +18,19 @@ class Controller {
     }
 
     jump(entity) {
-        entity.jump();
+        entity.takeAction(actions.JUMP);
     }
 
     charge_mana(entity) {
-        entity.charge_mana();
+        entity.takeAction(actions.CHARGE_MANA);
     }
 
     attack(entity) {
-        entity.attack();
+        entity.takeAction(actions.ATTACK);
     }
 
     alt_attack(entity) {
-        entity.alt_attack();
+        entity.takeAction(actions.ALT_ATTACK);
     }
 
     add_mana(entity) {
@@ -38,7 +38,7 @@ class Controller {
     }
 
     block(entity) {
-        entity.block();
+        entity.takeAction(actions.BLOCK);
     }
 
     release_block(entity) {

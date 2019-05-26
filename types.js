@@ -9,4 +9,5 @@ const actions = {
     ATTACK: 'attack',
     ALT_ATTACK: 'alt_attack',
     CHARGE_MANA: 'charge_mana',
+    BLOCK: 'block',
 }
