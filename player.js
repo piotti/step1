@@ -79,6 +79,7 @@ class Player {
     }
 
     charge_mana() {
+        console.log("AAAAAA");
         this.charge_counter += 1;
         if (this.charge_counter > 5) {
             reset_mana_counter();
