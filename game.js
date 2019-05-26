@@ -187,12 +187,12 @@ class Game {
         fill(color('gray'))
         rect(platform_x, platform_y, platform_length, 10);
         for (var i = 0; i < this.entities.length; i++) {
-            this.entities[i].updatePosition()
-            this.entities[i].draw();
-            if (this.entities[i].dead && this.started) {
+            this.entities[i].updatePosition();
+            if (this.entities[i].dead) {
                 this.finishGame();
+            } else {
+                this.entities[i].draw();
             }
-
         }  
 
         this.em.updatePosition();
