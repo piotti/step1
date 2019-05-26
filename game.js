@@ -181,10 +181,12 @@ class EntityManager {
 
 
 class Projectile {
-    constructor(x, y, dir) {
+    constructor(x, y, dir, opp) {
         this.x = x;
         this.y = y;
         this.vx = dir == directions.RIGHT ? 10: -10;
+        this.opp = opp;
+        this.connection_made = false;
     }
 
     setEntityManager(em) {
@@ -196,6 +198,18 @@ class Projectile {
         if (this.x < -10 || this.x > width + 10) {
             // remove
             this.em.removeEntity(this);
+        }
+
+        // collision detection
+        if (!this.connection_made) {
+            var opp = this.opp;
+            // console.log('hi');
+            if(collideRectRect(this.x, (this.vx < 0 ? this.y - 10: this.y), 10, 2,
+                opp.position_x, opp.position_y - opp.height, opp.width, opp.height)) {
+                opp.takePiu((this.vx < 0 ? directions.LEFT: directions.RIGHT));
+                this.connection_made = true;
+                this.em.removeEntity(this);
+            }
         }
     }
 

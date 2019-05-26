@@ -25,6 +25,8 @@ function setup() {
                 0,
                 'rgb(254, 176, 41)',
                 1);
+    entity1.setOpponent(entity2);
+    entity2.setOpponent(entity1);
     var controller1 = new PlayerOneController(entity1)
     var controller2 = new PlayerTwoController(entity2)
     game = new Game([entity1, entity2], [controller1, controller2]);

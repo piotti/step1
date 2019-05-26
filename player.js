@@ -42,6 +42,7 @@ class Arm {
     punch() {
         this.time = 0;
         this.punching = true;
+        this.connection_made = false;
     }
 
     draw(x, y, dir) {
@@ -57,7 +58,21 @@ class Arm {
             extension = (this.out_time * 2 - this.time) / this.out_time * this.out_dist;
         }
         fill(color(0))
-        rect(x, y, extension * (dir == directions.RIGHT ? 1: -1), 5)
+        if (dir == directions.LEFT)
+            x -= extension;
+        rect(x, y, extension, 5)
+
+        // collision detection
+        if (!this.connection_made) {
+            var opp = this.opp;
+            // console.log('hi');
+            if(collideRectRect(x, y, extension, 5,
+                opp.position_x, opp.position_y - opp.height, opp.width, opp.height)) {
+            console.log('hey');
+                opp.takePunch(dir);
+                this.connection_made = true;
+            }
+        }
     }
 }
 
@@ -85,7 +100,7 @@ class Player {
         this.name   = name;
         this.health = health;
         this.mana   = mana;
-        
+        this.player_num = player_num;
         this.width        = width;
         this.height       = height;
         this.position_x   = position_x;
@@ -110,6 +125,12 @@ class Player {
         this.arm = new Arm();
     }
 
+
+    setOpponent(opp) {
+        this.opponent = opp;
+        this.arm.opp = opp;
+    }
+
     reset_mana_counter() {
         this.charging = false;
         this.charge_counter = 0;
@@ -126,18 +147,29 @@ class Player {
 
     knockback(direction, damage) {
         switch(direction){
-            case direction.LEFT:
-                take_damage(damage);
-                this.position_x -= 3;
+            case directions.LEFT:
+                this.take_damage(damage);
+                this.vel_x -= 5;
+                this.vel_y = -5;
                 break;
-            case direction.RIGHT:
-                take_damage(damage);
-                this.position_x += 3;
+            case directions.RIGHT:
+                this.take_damage(damage);
+                this.vel_x += 5;
+                this.vel_y = -5;
                 break;
         }
     }
 
+    takePunch(direction) {
+        this.knockback(direction, this.attack_damage);
+    }
+
+    takePiu(direction) {
+        this.knockback(direction, this.alt_attack_damage);
+    }
+
     take_damage(damage) {
+        console.log(this.health);
         this.health -= damage;
     }
 
@@ -159,7 +191,7 @@ class Player {
         if (this.mana > 10) {
             console.log("piu");
             this.mana -= 10;
-            this.em.addEntity(new Projectile(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir));
+            this.em.addEntity(new Projectile(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir, this.opponent));
             switch(this.face_dir) {
                 case directions.LEFT:
                     //calculate hit
@@ -227,23 +259,32 @@ class Player {
         if (this.charging)
             this.charge_counter += 1;
 
-        this.vel_x += this.acc_x;
-        this.vel_x = min(this.max_vel, max(-this.max_vel, this.vel_x));
+
+        // this.vel_x += this.acc_x;
+        if (this.vel_x * this.acc_x > 0) {
+            if (abs(this.vel_x) < this.max_vel) {
+                this.vel_x += this.acc_x;
+            }
+        } else {
+            this.vel_x += this.acc_x;
+        }
+        // this.vel_x = min(this.max_vel, max(-this.max_vel, this.vel_x));
         this.position_x = this.position_x + this.vel_x;
         this.vel_y = this.vel_y + gravity;
         let last_y = this.position_y;
         this.position_y = this.position_y + this.vel_y;
 
         if (this.position_x < platform_x + platform_length && this.position_x + this.width > platform_x && last_y - this.height < platform_y) {
-            this.set_onstage(true); 
-            if (this.direction == directions.STOP) {
-                this.vel_x += this.vel_x > 0 ? -.5 : 0.5;
-                if (abs(this.vel_x) <= 0.5)
-                    this.vel_x = 0;
-            }
+            this.set_onstage(true);
+
             this.position_y = min(platform_y, this.position_y);
             if (this.position_y == platform_y) {
                 this.vel_y = 0;
+                if (this.direction == directions.STOP) {
+                    this.vel_x += this.vel_x > 0 ? -.5 : 0.5;
+                    if (abs(this.vel_x) <= 0.5)
+                        this.vel_x = 0;
+                }
             }
         } else {
             this.set_onstage(false);
