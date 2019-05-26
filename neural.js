@@ -6,8 +6,8 @@ class NNController extends Controller {
         this.opp = opp;
         this.genome = genome;
         this.keys = [false, false, false, false, false, false, false];
-        this.start_moves = [this.move_left, this.move_right, this.jump, this.attack, this.alt_attack, this.block, this.charge_mana];
-        this.stop_moves = [this.stop, this.stop, function(){}, function(){}, function(){}, this.release_block, this.add_mana];
+        this.start_moves = ['move_left', 'move_right', 'jump', 'attack', 'alt_attack', 'block', 'charge_mana'];
+        this.stop_moves = ['stop_left', 'stop_right', 'default', 'default', 'default', 'release_block', 'add_mana'];
     }
 
     update() {
@@ -45,9 +45,9 @@ class NNController extends Controller {
             if(bools[i] != this.keys[i]) {
                 this.keys[i] = bools[i];
                 if (bools[i])
-                    this.start_moves[i](this.entity);
+                    this[this.start_moves[i]]();
                 else
-                    this.stop_moves[i](this.entity);
+                    this[this.stop_moves[i]]();
             }
         }
 

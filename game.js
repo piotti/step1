@@ -3,86 +3,111 @@
 class Controller {
     constructor(entity) {
         this.entity = entity;
+
+        this.left_arrow = false;
+        this.right_arrow = false;
     }
 
-    move_left(entity) {
-        entity.takeDirection(directions.LEFT);
+    figure_direction(entity) {
+        if(this.left_arrow && !this.right_arrow)
+            entity.takeDirection(directions.LEFT);
+        else if (this.right_arrow && !this.left_arrow)
+            entity.takeDirection(directions.RIGHT);
+        else
+            entity.takeDirection(directions.STOP);
+
     }
 
-    move_right(entity) {
-        entity.takeDirection(directions.RIGHT);
+    default(){}
+
+    move_left() {
+        this.left_arrow = true;
+        this.figure_direction(this.entity);    
+
     }
 
-    stop(entity) {
-        entity.takeDirection(directions.STOP);     
+    move_right() {
+        this.right_arrow = true;
+        this.figure_direction(this.entity);    
+    }
+    stop_left() {
+        this.left_arrow = false;
+        this.figure_direction(this.entity);    
     }
 
-    jump(entity) {
-        entity.jump();
+    stop_right() {
+        this.right_arrow = false;
+        this.figure_direction(this.entity);    
     }
 
-    charge_mana(entity) {
-        entity.charge_mana();
+    stop() {
+        this.entity.takeDirection(directions.STOP);     
     }
 
-    attack(entity) {
-        entity.attack();
+    jump() {
+        this.entity.jump();
     }
 
-    alt_attack(entity) {
-        entity.alt_attack();
+    charge_mana() {
+        this.entity.charge_mana();
     }
 
-    add_mana(entity) {
-        entity.add_mana();
+    attack() {
+        this.entity.attack();
     }
 
-    block(entity) {
-        entity.block();
+    alt_attack() {
+        this.entity.alt_attack();
     }
 
-    release_block(entity) {
-        entity.release_block();
+    add_mana() {
+        this.entity.add_mana();
+    }
+
+    block() {
+        this.entity.block();
+    }
+
+    release_block() {
+        this.entity.release_block();
     }
 
     keyPressed() {
         if(keyCode == this.left_key) {
-            this.move_left(this.entity);
+            this.move_left();
         }
         if(keyCode == this.right_key) {
-            this.move_right(this.entity);
+            this.move_right();
         }
         if(keyCode == this.jump_key) {
-            this.jump(this.entity);
+            this.jump();
         }
         if(keyCode == this.down_key) {
-            this.charge_mana(this.entity);
+            this.charge_mana();
         }
         if(keyCode == this.attack_key) {
-            this.attack(this.entity);
+            this.attack();
         }
         if(keyCode == this.alt_attack_key){
-            this.alt_attack(this.entity);
+            this.alt_attack();
         }
         if(keyCode == this.block_key) {
-            this.block(this.entity);
+            this.block();
         }
     }
 
     keyReleased() {
         if(keyCode == this.left_key) {
-            if (this.entity.direction == directions.LEFT)
-                this.stop(this.entity);
+            this.stop_left();
         }
         if(keyCode == this.right_key) {
-            if (this.entity.direction == directions.RIGHT)
-                this.stop(this.entity);
+            this.stop_right();
         }
         if(keyCode == this.down_key) {
-            this.add_mana(this.entity);
+            this.add_mana();
         }
         if(keyCode == this.block_key) {
-            this.release_block(this.entity);
+            this.release_block();
         }
     }
 }
