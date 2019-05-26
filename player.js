@@ -87,8 +87,8 @@ class Player {
     mana   = 0;
     jump_vel = -10;
     max_vel = 3;
-    attack_damage = 4;
-    alt_attack_damage = 2;
+    attack_damage = 12;
+    alt_attack_damage = 6;
 
     constructor(name,
                 health,
