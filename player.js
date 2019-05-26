@@ -125,6 +125,8 @@ class Player {
         this.arm = new Arm();
 
         this.blocking = false;
+
+        this.knockback_time = 0;
     }
 
 
@@ -168,26 +170,27 @@ class Player {
         switch(direction){
             case directions.LEFT:
                 if(this.blocking) {
-                    this.vel_x -= 8;
-                    this.vel_y -= 8;
+                    this.vel_x = -8;
+                    // this.vel_y -= 8;
                 } else {
                     this.take_damage(damage);
-                    this.vel_x -= 5;
+                    this.vel_x = -5;
                     this.vel_y = -5;
                 }
                 
                 break;
             case directions.RIGHT:
                 if(this.blocking) {
-                    this.vel_x += 8;
-                    this.vel_y += 8;
+                    this.vel_x = 8;
+                    // this.vel_y += 8;
                 } else {
                     this.take_damage(damage);
-                    this.vel_x += 5;
+                    this.vel_x = 5;
                     this.vel_y = -5;
                 }
                 break;
         }
+        this.knockback_time = 20;
     }
 
     takePunch(direction) {
@@ -283,35 +286,52 @@ class Player {
         switch(this.direction){
             case directions.LEFT:
                 this.face_dir = directions.LEFT;
-                this.acc_x = -1;
+                // this.acc_x = -1;
                 break;
             case directions.RIGHT:
                 this.face_dir = directions.RIGHT;
-                this.acc_x = 1;
+                // this.acc_x = 1;
                 break;
             case directions.STOP:
-                this.acc_x = 0;
+                // this.acc_x = 0;
                 break;
                 // do nothing
         }
 
     }
 
+    getCommandedXVel() {
+        switch(this.direction){
+            case directions.LEFT:
+                return -this.max_vel;
+            case directions.RIGHT:
+                return this.max_vel;
+            case directions.STOP:
+                return 0;
+        }
+    }
+
     updatePosition() {
         //charge counting
         if (this.charging)
             this.charge_counter += 1;
+        if (this.knockback_time > 0)
+            this.knockback_time--;
 
 
         // this.vel_x += this.acc_x;
-        if (this.vel_x * this.acc_x > 0) {
-            if (abs(this.vel_x) < this.max_vel) {
-                this.vel_x += this.acc_x;
-            }
-        } else {
-            this.vel_x += this.acc_x;
-        }
+        // if (this.vel_x * this.acc_x > 0) {
+        //     if (abs(this.vel_x) < this.max_vel) {
+        //         this.vel_x += this.acc_x;
+        //     }
+        // } else {
+        //     this.vel_x += this.acc_x;
+        // }
         // this.vel_x = min(this.max_vel, max(-this.max_vel, this.vel_x));
+        var commaned_xvel = this.getCommandedXVel();
+        if (this.knockback_time == 0) {
+            this.vel_x = commaned_xvel;
+        }
         this.position_x = this.position_x + this.vel_x;
         this.vel_y = this.vel_y + gravity;
         let last_y = this.position_y;
