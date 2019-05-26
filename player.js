@@ -129,6 +129,7 @@ class Player {
         this.blocking = false;
 
         this.knockback_time = 0;
+        this.ticks = 0;
     }
 
 
@@ -137,6 +138,7 @@ class Player {
         fitness += 1000 * (this.lives - this.opponent.lives);
         fitness += 20 * this.mana;
         fitness += 50 * this.health;
+        fitness -= this.ticks * 0.1;
         return fitness;
     }
 
@@ -316,6 +318,7 @@ class Player {
     }
 
     updatePosition() {
+        this.ticks += 1;
         //charge counting
         if (this.charging)
             this.charge_counter += 1;
