@@ -11,7 +11,7 @@ class NNController extends Controller {
     }
 
     update() {
-        console.log(this.entity);
+        // console.log(this.entity);
         let input = [
             this.entity.position_x/width,
             this.entity.position_y/height,
@@ -49,6 +49,17 @@ class NNController extends Controller {
                 else
                     this.stop_moves[i](this.entity);
             }
+        }
+
+
+        // draw fields
+        function setColor(on) {
+            fill(color(on ? 'red': 'black'));
+        }
+        let fields = ['L', 'R', 'J', 'A', 'Alt', 'B', 'C'];
+        for (var i = 0; i < fields.length; i++) {
+            setColor(this.keys[i]);
+            text(fields[i], 20, 20+i*20);
         }
 
     }
@@ -154,6 +165,8 @@ function startEvaluation(){
     game.nn_controllers = [c0, c1];
 
     game.start();
+
+    drawGraph(g0.graph(500, 500), '.draw');
 
 
   // }

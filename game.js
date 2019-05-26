@@ -47,42 +47,42 @@ class Controller {
 
     keyPressed() {
         if(keyCode == this.left_key) {
-            this.move_left();
+            this.move_left(this.entity);
         }
         if(keyCode == this.right_key) {
-            this.move_right();
+            this.move_right(this.entity);
         }
         if(keyCode == this.jump_key) {
-            this.jump();
+            this.jump(this.entity);
         }
         if(keyCode == this.down_key) {
-            this.charge_mana();
+            this.charge_mana(this.entity);
         }
         if(keyCode == this.attack_key) {
-            this.attack();
+            this.attack(this.entity);
         }
         if(keyCode == this.alt_attack_key){
-            this.alt_attack();
+            this.alt_attack(this.entity);
         }
         if(keyCode == this.block_key) {
-            this.block();
+            this.block(this.entity);
         }
     }
 
     keyReleased() {
         if(keyCode == this.left_key) {
             if (this.entity.direction == directions.LEFT)
-                this.stop();
+                this.stop(this.entity);
         }
         if(keyCode == this.right_key) {
             if (this.entity.direction == directions.RIGHT)
-                this.stop();
+                this.stop(this.entity);
         }
         if(keyCode == this.down_key) {
-            this.add_mana();
+            this.add_mana(this.entity);
         }
         if(keyCode == this.block_key) {
-            this.release_block();
+            this.release_block(this.entity);
         }
     }
 }

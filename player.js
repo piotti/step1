@@ -31,6 +31,8 @@ class PlayerInfo {
 
         fill(color(0));
         text(this.player.getFitness(), x+50, y);
+
+        
     }
 }
 

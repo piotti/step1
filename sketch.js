@@ -1,7 +1,8 @@
 var game;
 
 function setup() {
-    createCanvas(1000, 500);
+    var canvas = createCanvas(1000, 500);
+    canvas.parent('p5canvas');
 
     startEvaluation();
 
@@ -32,7 +33,8 @@ function setup() {
     // var controller1 = new PlayerOneController(entity1)
     // var controller2 = new PlayerTwoController(entity2)
     // game = new Game([entity1, entity2], [controller1, controller2]);
-    game.setup();
+    // game.setup();
+    // game.start();
 }
 
 var ticks = 0;
