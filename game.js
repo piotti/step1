@@ -29,8 +29,8 @@ class Controller {
         this.entity.attack();
     }
 
-    alt_attack_key() {
-        this.entity.alt_attack_key();
+    alt_attack() {
+        this.entity.alt_attack();
     }
 
     keyPressed() {
@@ -50,7 +50,7 @@ class Controller {
             this.attack();
         }
         if(keyCode == this.alt_attack_key){
-            this.alt_attack_key();
+            this.alt_attack();
         }
     }
 
