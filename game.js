@@ -189,7 +189,7 @@ class Game {
         for (var i = 0; i < this.entities.length; i++) {
             this.entities[i].updatePosition()
             this.entities[i].draw();
-            if (this.entities[i].dead && this.started) {
+            if (this.entities[i].dead && !this.started) {
                 this.finishGame();
             }
 
