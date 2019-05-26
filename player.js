@@ -306,6 +306,16 @@ class Player {
                     this.block();
                 } 
                 break;
+            case actions.MOVE_LEFT:
+                if (!this.blocking && !this.charging) {
+                    this.takeDirection(directions.LEFT);
+                }
+                break;
+            case actions.MOVE_RIGHT:
+                if (!this.blocking && !this.charging) {
+                    this.takeDirection(directions.RIGHT);
+                }
+                break;
         }
     }
 

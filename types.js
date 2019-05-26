@@ -10,4 +10,6 @@ const actions = {
     ALT_ATTACK: 'alt_attack',
     CHARGE_MANA: 'charge_mana',
     BLOCK: 'block',
+    MOVE_LEFT: 'move_left',
+    MOVE_RIGHT: 'move_right', 
 }

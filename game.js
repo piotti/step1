@@ -6,11 +6,11 @@ class Controller {
     }
 
     move_left(entity) {
-        entity.takeDirection(directions.LEFT);
+        entity.takeAction(actions.MOVE_LEFT);
     }
 
     move_right(entity) {
-        entity.takeDirection(directions.RIGHT);
+        entity.takeAction(actions.MOVE_RIGHT);
     }
 
     stop(entity) {
