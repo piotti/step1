@@ -5,7 +5,7 @@ function setup() {
 
     var entity1 = new Player('P1',
                 100,
-                0,
+                100,
                 20,
                 30,
                 width/2,
@@ -34,10 +34,6 @@ function setup() {
 
 function draw() {
     game.draw();
-
-    for (var i = 0; i < animations.length; i++) {
-        animations[i].draw();
-    }
 }
 
 
@@ -48,38 +44,6 @@ function keyPressed() {
 function keyReleased() {
     game.keyReleased();
 }
-
-
-
-// Util
-var animations = [];
-class Animation {
-    constructor(vals, times) {
-        this.vals = vals;
-        this.times = times;
-        this.time = 0;
-        this.done = false;
-    }
-
-    get_val() {
-        
-    }
-
-    draw() {
-        if (this.done)
-            return;
-        this.time += 1;
-        if (this.time > this.length) {
-            this.vals = this.end_vals;
-            this.done = true;
-            return;
-        }
-        for (var i = 0; i < this.vals.length; i++) {
-            this.vals[i] = this.start_vals[i] + (this.end_vals[i] - this.start_vals[i]) * (this.time / this.length);
-        }
-    }
-}
-
 
 
 
