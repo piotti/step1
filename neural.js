@@ -8,7 +8,8 @@ var directions = require('./types.js').directions;
 var setNewGame = require('./train.js').setNewGame;
 console.log(setNewGame);
 
-
+var player_logic = require('./constants.js').player_logic;
+var game_logic = require('./constants.js').game_logic;
 
 var width = 1000;
 var height = 500;
@@ -38,6 +39,45 @@ class NNController extends Controller {
             setColor(this.keys[i]);
             text(fields[i], 20+50*this.entity.player_num, 20+i*20);
         }
+    }
+
+    export_inputs_json() {
+      // 25 inputs
+      let current_input = {
+          my_pos_x: this.entity.position_x / game_logic.WIDTH,
+          my_pos_y: this.entity.position_y / game_logic.HEIGTH,
+          my_vel_x: this.entity.vel_x / player_logic.MAX_X_VEL,
+          my_vel_y: this.entity.vel_y / player_logic.MAX_Y_VEL,
+          opp_pos_x: this.opp.position_x / game_logic.WIDTH,
+          opp_pos_y: this.opp.position_y / game_logic.HEIGHT,
+          opp_vel_x: this.opp.vel_x / player_logic.MAX_X_VEL,
+          opp_vel_y: this.opp.vel_y / player_logic.MAX_Y_VEL,
+          my_blocking: Number(this.entity.blocking),
+          opp_blocking: Number(this.opp.blocking),
+          my_charging: Number(this.entity.charging),
+          opp_charging: Number(this.opp.charging),
+          left_edge: (this.entity.position_x+this.entity.width-game_logic.PLATFORM_STARTING_X)/game_logic.WIDTH,
+          right_edge: (game_logic.PLATFORM_STARTING_X+game_logic.PLATFORM_WIDTH-this.entity.position_x)/game_logic.WIDTH,            
+          my_facing_right: Number(this.entity.face_dir == directions.RIGHT),
+          my_facing_left: Number(this.entity.face_dir == directions.LEFT),
+          opp_facing_right: Number(this.opp.face_dir == directions.RIGHT),
+          opp_facing_left: Number(this.opp.face_dir == directions.LEFT),
+          my_health: this.entity.health/player_logic.MAX_HEALTH,
+          my_mana: this.entity.mana/player_logic.MAX_MANA,
+          my_lives: this.entity.lives/player_logic.STARTING_LIVES,
+          opp_health: this.opp.health/player_logic.MAX_HEALTH,
+          opp_mana: this.opp.mana/player_logic.MAX_MANA,
+          opp_lives: this.opp.lives/player_logic.STARTING_LIVES,
+      }
+      let outgoing = JSON.stringify(current_input);
+      // change this to post to python server hosting brain
+      return outgoing;
+    }
+
+    consume_output_json(output_json) {
+      // change to consume json from python server hosting brain
+      let output_obj = JSON.parse(output_json);
+      return output_obj;
     }
 
     update() {
@@ -80,10 +120,6 @@ class NNController extends Controller {
                     this[this.stop_moves[i]]();
             }
         }
-
-
-        
-
     }
 }
 

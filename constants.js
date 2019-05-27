@@ -3,6 +3,7 @@
 const player_logic =  {
     MAX_X_VEL_COMMANDED: 3,
     MAX_X_VEL: 8,
+    MAX_Y_VEL: 10,
     JUMP_VEL: -10,
     ATTACK_DAMAGE: 12,
     ALT_ATTACK_DAMAGE: 6,
