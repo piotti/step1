@@ -1,9 +1,9 @@
-
+var game_logic = require('./constants.js').game_logic;
 var game_obj;
 
 var run_gens = false;
 function setup() {
-    var canvas = createCanvas(1000, 500);
+    var canvas = createCanvas(game_logic.WIDTH, game_logic.HEIGHT);
     canvas.parent('p5canvas');
 
     game_obj = startEvaluation(0);
@@ -47,7 +47,6 @@ function draw() {
 
 // setup();
 
-
 function startGens() {
     run_gens = true;
 }
@@ -63,8 +62,3 @@ function keyPressed() {
 function keyReleased() {
     game_obj.keyReleased();
 }
-
-
-
-
-

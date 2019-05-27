@@ -1,5 +1,7 @@
-var width = 1000;
-var height = 500;
+var game_logic = require('./constants.js').game_logic;
+var game_render = require('./constants.js').game_render;
+var player_logic = require('./constants.js').player_logic;
+var player_render = require('./constants.js').player_render;
 
 var types = require('./types.js');
 var directions = types.directions;
@@ -21,7 +23,6 @@ class Controller {
             entity.takeAction(actions.MOVE_RIGHT);
         else
             entity.takeDirection(directions.STOP);
-
     }
 
     default(){}
@@ -29,13 +30,13 @@ class Controller {
     move_left() {
         this.left_arrow = true;
         this.figure_direction(this.entity);    
-
     }
 
     move_right() {
         this.right_arrow = true;
         this.figure_direction(this.entity);    
     }
+
     stop_left() {
         this.left_arrow = false;
         this.figure_direction(this.entity);    
@@ -144,29 +145,16 @@ class PlayerTwoController extends Controller{
     }
 }
 
-
-
-
-
-
 class Game {
     constructor(entities, controllers) {
         this.entities = entities;
         this.controllers = controllers;
         this.em = new EntityManager();
-
         for (var i = 0; i < this.entities.length; i++) {
             this.entities[i].setEntityManager(this.em);
         }
-
-        game.platform_length = 600;
-        game.platform_x = width/2-game.platform_length/2;
-        game.platform_y = height-100;
-
         this.nn_controllers = [];
-
         this.started = false;
-
     }
 
     start(scores_callback, i, j) {
@@ -177,7 +165,7 @@ class Game {
     }
 
     setup() {
-        background(200, 200, 200);
+        background(game_render.BACKGROUND_COLOR);
     }
 
     finishGame() {
@@ -207,9 +195,12 @@ class Game {
     draw() {
         if(!this.started)
             return;
-        background(200, 200, 200);
+        background(game_render.BACKGROUND_COLOR);
         fill(color('gray'))
-        rect(game.platform_x, game.platform_y, game.platform_length, 10);
+        rect(game_logic.PLATFORM_STARTING_X,
+             game_logic.PLATFORM_STARTING_Y,
+             game_logic.PLATFORM_WIDTH,
+             game_logic.PLATFORM_HEIGHT);
         for (var i = 0; i < this.entities.length; i++) {
             if (!this.entities[i].dead) {
                 this.entities[i].draw();
@@ -268,12 +259,11 @@ class EntityManager {
     }
 }
 
-
 class Projectile {
     constructor(x, y, dir, opp) {
         this.x = x;
         this.y = y;
-        this.vx = dir == directions.RIGHT ? 10: -10;
+        this.vx = dir == directions.RIGHT ? player_logic.PROJECTILE_VEL_X: -player_logic.PROJECTILE_VEL_X;
         this.opp = opp;
         this.connection_made = false;
     }
@@ -293,7 +283,10 @@ class Projectile {
         if (!this.connection_made) {
             var opp = this.opp;
             // console.log('hi');
-            if(collideRectRect(this.x, (this.vx < 0 ? this.y - 10: this.y), 10, 2,
+            if(collideRectRect(this.x, 
+                (this.vx < 0 ? this.y - player_logic.PROJECTILE_WIDTH: this.y),
+                player_logic.PROJECTILE_WIDTH,
+                player_logic.PROJECTILE_HEIGHT,
                 opp.position_x, opp.position_y - opp.height, opp.width, opp.height)) {
                 opp.takePiu((this.vx < 0 ? directions.LEFT: directions.RIGHT));
                 this.connection_made = true;
@@ -303,8 +296,8 @@ class Projectile {
     }
 
     draw() {
-        fill(color(0));
-        rect(this.x, this.y, (this.vx < 0 ? -10: 10), 2);
+        fill(player_render.PROJECTILE_COLOR);
+        rect(this.x, this.y, (this.vx < 0 ? -player_logic.PROJECTILE_WIDTH: player_logic.PROJECTILE_WIDTH), player_logic.PROJECTILE_HEIGHT);
     }
 }
 
@@ -316,7 +309,6 @@ var collideRectRect = function(ax, ay, aw, ah, bx, by, bw, bh) {
     let by2 = by + bh;
 
     return ax < bx2 && ax2 > bx && ay < by2 && ay2 > by;
-
 }
 
 
@@ -325,10 +317,6 @@ var game = {
     Game: Game,
     EntityManager: EntityManager,
     Projectile: Projectile,
-    gravity: 0.5,
-    platform_y: 0,
-    platform_x: 0,
-    platform_length: 0,
     collideRectRect: collideRectRect,
 }
 
@@ -344,8 +332,3 @@ module.exports = game;
 //     platform_x: platform_x,
 //     platform_length: platform_length,
 // }
-
-
-
-
-

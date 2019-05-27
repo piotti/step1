@@ -1,13 +1,13 @@
-var width = 1000;
-var height = 500;
+//CONSTS
+var player_logic = require('./constants.js').player_logic;
+var player_render = require('./constants.js').player_render;
+var player_info_render = require('./constants.js').player_info_render;
+var game_logic = require('./constants.js').game_logic;
 
 
 var directions = require('./types.js').directions;
 var actions = require('./types.js').actions;
 var game = require('./game.js');
-
-
-
 
 
 
@@ -18,29 +18,50 @@ class PlayerInfo {
     }
 
     draw() {
-        let x = width/2 + (this.player_num * 2 - 1 ) * 150 - 50;
-        let y = height-60;
+        let x = (this.player_num % 2 == 0) ? 
+                 player_info_render.INFO_CONTAINER_LEFT_POS_X:
+                 player_info_render.INFO_CONTAINER_RIGHT_POS_X;
+
+        let y = player_info_render.INFO_CONTAINER_POS_Y;
+        
         // border
         // noFill();
-        fill(color(220,220,220));
-        rect(x-10, y-15, 125, 60);
+        fill(player_info_render.INFO_CONTAINER_COLOR);
+        rect(x-player_info_render.INFO_BORDER_X_OFFSET,
+             y-player_info_render.INFO_BORDER_Y_OFFSET, 
+             player_info_render.INFO_BORDER_WIDTH,
+             player_info_render.INFO_BORDER_HEIGHT);
 
         fill(color(this.player.color));
         text(this.player.name, x, y);
         // health bar
         noFill();
-        rect(x, y+10, 104, 10);
-        fill(color(200, 100, 100));
-        rect(x+2, y+12, this.player.health, 6);
+        rect(x,
+            y + player_info_render.HEALTH_BAR_Y_OFFSET,
+            player_info_render.HEALTH_BAR_WIDTH, 
+            player_info_render.HEALTH_BAR_HEIGHT);
+        fill(player_info_render.HEALTH_BAR_COLOR);
+        rect(x+player_info_render.HEALTH_BAR_INNER_X_OFFSET,
+             y+player_info_render.HEALTH_BAR_INNER_Y_OFFSET,
+             this.player.health,
+             player_info_render.HEALTH_BAR_INNER_HEIGHT);
 
         // mana bar
         noFill();
-        rect(x, y+25, 104, 10);
-        fill(color(100, 100, 200));
-        rect(x+2, y+27, this.player.mana, 6);
+        rect(x, 
+             y+player_info_render.MANA_BAR_Y_OFFSET,
+             player_info_render.MANA_BAR_WIDTH,
+             player_info_render.MANA_BAR_HEIGHT);
+        fill(player_info_render.MANA_BAR_COLOR);
+        rect(x+player_info_render.MANA_BAR_INNER_X_OFFSET,
+             y+player_info_render.MANA_BAR_INNER_Y_OFFSET,
+             this.player.mana,
+             player_info_render.HEALTH_BAR_INNER_HEIGHT);
 
-        fill(color(0));
-        text(this.player.getFitness(), x+50, y);
+        fill(color(this.player.color));
+        text(this.player.getFitness(),
+             x+player_info_render.FITNESS_X_OFFSET,
+             y);
 
         
     }
@@ -49,8 +70,8 @@ class PlayerInfo {
 
 class Arm {
     constructor() {
-        this.out_dist = 20; //pixels
-        this.out_time = 5; //ticks
+        this.out_dist = player_logic.ARM_REACH; //pixels
+        this.out_time = player_logic.ARM_SPEED; //ticks
         this.punching = false;
 
         this.x = 0;
@@ -86,10 +107,8 @@ class Arm {
         // collision detection
         if (!this.connection_made) {
             var opp = this.opp;
-            // console.log('hi');
-            if(game.collideRectRect(x, y, extension, 5,
+            if(game.collideRectRect(x, y, extension, player_logic.ARM_HEIGHT,
                 opp.position_x, opp.position_y - opp.height, opp.width, opp.height)) {
-            // console.log('hey');
                 opp.takePunch(dir);
                 this.connection_made = true;
             }
@@ -99,77 +118,56 @@ class Arm {
     draw() {
         if(!this.punching)
             return;
-        fill(color(0))
+        fill(player_render.ARM_COLOR);
         if (this.dir == directions.LEFT)
             this.x -= this.extension;
-        rect(this.x, this.y, this.extension, 5)
+        rect(this.x, this.y, this.extension, player_logic.ARM_HEIGHT);
     }
 }
 
-
 class Player {
-    
-
     constructor(name,
-                health,
-                mana,
-                width,
-                height,
-                position_x,
-                position_y,
-                vel_x,
-                vel_y,
                 color,
                 player_num) {
-
-        this.jump_vel = -10;
-        this.max_vel = 3;
-        this.attack_damage = 12;
-        this.alt_attack_damage = 6;
-
         this.name   = name;
-        this.health = health;
-        this.mana   = mana;
-        this.player_num = player_num;
-        this.width        = width;
-        this.height       = height;
-        this.position_x   = position_x;
-        this.position_y   = position_y;
-        this.vel_x        = vel_x;
-        this.vel_y        = vel_y;
-        this.acc_x = 0;
-
         this.color = color;
+        this.player_num = player_num;
 
+        //condition
+        this.health = player_logic.STARTING_HEALTH;
+        this.mana   = player_logic.STARTING_MANA;
+        
+        //position
+        this.width        = player_logic.PLAYER_WIDTH;
+        this.height       = player_logic.PLAYER_HEIGHT;
+        this.position_x   = player_logic.STARTING_POS_X;
+        this.position_y   = player_logic.STARTING_POS_Y;
+        this.vel_x        = player_logic.STARTING_VEL_X;
+        this.vel_y        = player_logic.STARTING_VEL_Y;
+        
+        //state
         this.onstage = true;
         this.direction = directions.STOP;
-        this.lives = 3;
-
-        this.face_dir = directions.RIGHT;
-
-
+        this.lives = player_logic.STARTING_LIVES;
+        this.face_dir = (this.player_num % 2 == 0) ? directions.RIGHT : directions.LEFT;
         this.charge_counter = 0;
         this.charging = false;
-
-        this.arm = new Arm();
-
         this.blocking = false;
-
         this.knockback_time = 0;
         this.ticks = 0;
-
         this.dead = false;
-
         this.ticks_since_last_move = 0;
-    }
 
+        //members
+        this.arm = new Arm();
+    }
 
     getFitness() {
         let fitness = 0;
-        fitness += 1000 * (this.lives - this.opponent.lives);
-        fitness += 20 * this.mana;
-        fitness += 50 * this.health;
-        fitness -= this.ticks * 0.1;
+        fitness += game_logic.LIFE_DELTA_MULTIPLIER * (this.lives - this.opponent.lives);
+        fitness += game_logic.MANA_MULTIPLIER * this.mana;
+        fitness += game_logic.HEALTH_MULTIPLIER * this.health;
+        fitness -= this.ticks * game_logic.TICK_DISCOUNT;
         return fitness;
     }
 
@@ -199,46 +197,42 @@ class Player {
 
     jump() {
         if (this.position_y == game.platform_y) 
-            this.vel_y = this.jump_vel;
+            this.vel_y = player_logic.JUMP_VEL;
     }
 
     knockback(direction, damage) {
         switch(direction){
             case directions.LEFT:
                 if(this.blocking) {
-                    this.vel_x = -8;
-                    // this.vel_y -= 8;
+                    this.vel_x = -player_logic.KNOCKBACK_VEL_X_BLOCK;
                 } else {
                     this.take_damage(damage);
-                    this.vel_x = -5;
-                    this.vel_y = -5;
+                    this.vel_x = -player_logic.KNOCKBACK_VEL_X;
+                    this.vel_y = -player_logic.KNOCKBACK_VEL_Y;
                 }
-                
                 break;
             case directions.RIGHT:
                 if(this.blocking) {
-                    this.vel_x = 8;
-                    // this.vel_y += 8;
+                    this.vel_x = player_logic.KNOCKBACK_VEL_X_BLOCK;
                 } else {
                     this.take_damage(damage);
-                    this.vel_x = 5;
-                    this.vel_y = -5;
+                    this.vel_x = player_logic.KNOCKBACK_VEL_X;
+                    this.vel_y = -player_logic.KNOCKBACK_VEL_Y;
                 }
                 break;
         }
-        this.knockback_time = 20;
+        this.knockback_time = player_logic.KNOCKBACK_TICKS;
     }
 
     takePunch(direction) {
-        this.knockback(direction, this.attack_damage);
+        this.knockback(direction, player_logic.ATTACK_DAMAGE);
     }
 
     takePiu(direction) {
-        this.knockback(direction, this.alt_attack_damage);
+        this.knockback(direction, player_logic.ALT_ATTACK_DAMAGE);
     }
 
     take_damage(damage) {
-        
         this.health -= damage;
         if (this.health < 0) {
             this.lives -= 1;
@@ -247,45 +241,28 @@ class Player {
     }
 
     attack() {
-        // console.log("atak");
-        switch(this.face_dir) {
-            case directions.LEFT:
-                //calculate hit
-                break;
-            case directions.RIGHT:
-                //calculate hit
-                break;
-        }
         this.arm.punch();
-
     }
 
     alt_attack() {
-        if (this.mana > 10) {
+        if (this.mana > player_logic.ALT_ATTACK_COST) {
             // console.log("piu");
-            this.mana -= 10;
-            this.em.addEntity(new game.Projectile(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir, this.opponent));
-            switch(this.face_dir) {
-                case directions.LEFT:
-                    //calculate hit
-                    break;
-                case directions.RIGHT:
-                    //calculate hit
-                    break;
-            }
+            this.mana = Math.max(0, this.mana - player_logic.ALT_ATTACK_COST);
+            this.em.addEntity(
+                new game.Projectile(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0),
+                                    this.position_y-this.height+10, 
+                                    this.face_dir,
+                                    this.opponent));
         } 
     }
 
     charge_mana() {
-        // console.log("AAAAAA");
-        // start tick counter
         this.charging = true;
     }
 
     add_mana() {
-        if (this.charge_counter > 5)
-            this.mana += this.charge_counter / 5;    
-            this.mana = Math.min(this.mana, 100);        
+        this.mana = Math.min(this.mana + this.charge_counter / player_logic.TICKS_PER_MANA_CHARGE,
+                             player_logic.MAX_MANA);        
         this.reset_mana_counter();
     }
 
@@ -340,16 +317,12 @@ class Player {
         switch(this.direction){
             case directions.LEFT:
                 this.face_dir = directions.LEFT;
-                // this.acc_x = -1;
                 break;
             case directions.RIGHT:
                 this.face_dir = directions.RIGHT;
-                // this.acc_x = 1;
                 break;
             case directions.STOP:
-                // this.acc_x = 0;
                 break;
-                // do nothing
         }
 
     }
@@ -358,44 +331,40 @@ class Player {
         switch(this.direction){
             case directions.LEFT:
                 this.ticks_since_last_move = 0;
-                return -this.max_vel;
+                return -player_logic.MAX_X_VEL_COMMANDED;
             case directions.RIGHT:
                 this.ticks_since_last_move = 0;
-                return this.max_vel;
+                return player_logic.MAX_X_VEL_COMMANDED;
             case directions.STOP:
                 return 0;
         }
     }
 
     respawn(){
-        // console.log("respawning")
         if (this.lives <= 0) {
-            // console.log("ive died");
             this.dead = true;
         } else {
-            this.position_x = width/2;
-            this.position_y = height/2;
-            this.vel_x = 0;
-            this.vel_y = 0;
-            this.health = 60;
+            this.position_x = player_logic.STARTING_POS_X;
+            this.position_y = player_logic.STARTING_POS_Y;
+            this.vel_x = player_logic.STARTING_VEL_X;
+            this.vel_y = player_logic.STARTING_VEL_Y;
+            this.health = player_logic.STARTING_HEALTH;
         }
     }
 
     updatePosition() {
         this.ticks += 1;
-        // console.log(this.direction);
-        //charge counting
         this.ticks_since_last_move += 1;
-        if (this.ticks_since_last_move > 200) {
+        if (this.ticks_since_last_move > player_logic.INACTIVE_KILL_THRESHOLD) {
             this.ticks_since_last_move = 0;
-            // console.log("too many ticks since last move, die");
             this.lives -= 1;
-
             this.respawn();
             return;
-        }    
+        }
+
         if (this.charging)
             this.charge_counter += 1;
+
         if (this.knockback_time > 0)
             this.knockback_time--;
 
@@ -403,20 +372,23 @@ class Player {
         if (this.knockback_time == 0) {
             this.vel_x = commaned_xvel;
         }
+
         this.position_x = this.position_x + this.vel_x;
-        this.vel_y = this.vel_y + game.gravity;
+        this.vel_y = this.vel_y + game_logic.GRAVITY;
         let last_y = this.position_y;
         this.position_y = this.position_y + this.vel_y;
 
-        if (this.position_x < game.platform_x + game.platform_length && this.position_x + this.width > game.platform_x && last_y - this.height < game.platform_y) {
+        if (this.position_x < game_logic.PLATFORM_STARTING_X + game_logic.PLATFORM_WIDTH &&
+            this.position_x + this.width > game_logic.PLATFORM_STARTING_X &&
+            last_y - this.height < game_logic.PLATFORM_STARTING_Y) {
             this.set_onstage(true);
 
-            this.position_y = Math.min(game.platform_y, this.position_y);
-            if (this.position_y == game.platform_y) {
+            this.position_y = Math.min(game_logic.PLATFORM_STARTING_Y, this.position_y);
+            if (this.position_y == game_logic.PLATFORM_STARTING_Y) {
                 this.vel_y = 0;
                 if (this.direction == directions.STOP) {
-                    this.vel_x += this.vel_x > 0 ? -.5 : 0.5;
-                    if (Math.abs(this.vel_x) <= 0.5)
+                    this.vel_x += this.vel_x > 0 ? -game_logic.FRICTION : game_logic.FRICTION;
+                    if (Math.abs(this.vel_x) <= player_logic.MIN_VEL_X)
                         this.vel_x = 0;
                 }
             }
@@ -424,14 +396,14 @@ class Player {
             this.set_onstage(false);
         }
 
-        if (this.position_y > game.platform_y && !this.onstage) {
+        if (this.position_y > game_logic.PLATFORM_STARTING_Y && !this.onstage) {
             this.lives -= 1;
-
             this.respawn();
         }
 
-        this.arm.tick(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0), this.position_y-this.height+10, this.face_dir);
-
+        this.arm.tick(this.position_x + (this.face_dir == directions.RIGHT ? this.width: 0),
+                      this.position_y-this.height+10,
+                      this.face_dir);
     }
 
     setEntityManager(em) {
@@ -441,25 +413,24 @@ class Player {
     draw() {
         let c = this.color;
         if (this.charging) {
-            c = 'rgb(1, 254, 254)'
+            c = player_render.CHARGING_COLOR;
         }
         if (this.blocking) {
-            c = 'rgb(116, 48, 218)'
+            c = player_render.BLOCKING_COLOR;
         }
         fill(color(c));
         rect(this.position_x, this.position_y - this.height, this.width, this.height);
-        fill(color(0,0,0));
-        ellipse(this.position_x + (this.face_dir == directions.RIGHT ? this.width-5: 5), this.position_y-this.height+10, 5, 5);
+        fill(player_render.EYE_COLOR);
+        ellipse(this.position_x + (this.face_dir == directions.RIGHT ? this.width-player_render.EYE_OFFSET_X: player_render.EYE_OFFSET_X),
+                this.position_y-this.height+player_render.EYE_OFFSET_Y,
+                player_render.EYE_RADIUS,
+                player_render.EYE_RADIUS);
         
         this.arm.draw();
-
         this.info.draw();
     }
 }
 
-
-
 module.exports = {
     Player: Player,
 }
-
